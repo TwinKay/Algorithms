@@ -1,0 +1,5 @@
+n = int(input())
+total = input().split()
+total = list(map(int, total))
+# str(min(total))+" "+str(max(total))
+print(min(total), max(total))
