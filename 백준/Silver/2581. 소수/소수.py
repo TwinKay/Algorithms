@@ -7,11 +7,6 @@ s = []
 for k in range(y-x+1):
     c.append(x+k)
 
-    
-L_all = []
-for j in range(1000):
-    L_all.append(j+1)
-
 
 for a in c:
     if a == 1 :
@@ -23,6 +18,8 @@ for a in c:
         for i in range(a-2):
             if a/(i+2)%1 == 0 :
                 L.append(a)
+                break
+                
         if L == []:
             s.append(a)
 
