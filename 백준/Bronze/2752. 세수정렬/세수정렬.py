@@ -1,0 +1,5 @@
+# 시험기간
+import sys
+l = list(map(int, sys.stdin.readline().split()))
+l.sort()
+print(l[0], l[1], l[2])
