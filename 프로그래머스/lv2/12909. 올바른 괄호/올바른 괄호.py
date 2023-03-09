@@ -6,7 +6,7 @@ def solution(s):
             l += 1
         else:
             r += 1
-        if l<r:
+        if l < r:
             ans = False
             break
     if l != r:
