@@ -28,9 +28,9 @@ def dfs(r):
         if not visited_dfs[i]:
             dfs(i)
 
-def bfs(r):
-    visited_bfs[r] = True
+def bfs():
     deq = deque([r])
+    visited_bfs[r] = True
 
     while deq:
         a = deq.popleft()
@@ -42,7 +42,7 @@ def bfs(r):
                 visited_bfs[i] = True
 
 dfs(r)
-bfs(r)
+bfs()
 
 print(' '.join(list(map(str, ord_dfs))))
 print(' '.join(list(map(str, ord_bfs))))
