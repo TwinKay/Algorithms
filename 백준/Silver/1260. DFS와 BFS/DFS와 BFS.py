@@ -1,6 +1,5 @@
 import sys
 from collections import deque
-sys.setrecursionlimit(((10**9)))
 
 n,m,r = map(int, sys.stdin.readline().split())
 
@@ -21,15 +20,15 @@ for _ in range(m):
 for i in v:
     i.sort()
 
-def dfs(v, r, visited_dfs):
+def dfs(r):
     visited_dfs[r] = True
     ord_dfs.append(r)
 
     for i in v[r]:
         if not visited_dfs[i]:
-            dfs(v, i, visited_dfs)
+            dfs(i)
 
-def bfs(v, r, visited_bfs):
+def bfs(r):
     visited_bfs[r] = True
     deq = deque([r])
 
@@ -42,8 +41,8 @@ def bfs(v, r, visited_bfs):
                 deq.append(i)
                 visited_bfs[i] = True
 
-dfs(v, r, visited_dfs)
-bfs(v, r, visited_bfs)
+dfs(r)
+bfs(r)
 
 print(' '.join(list(map(str, ord_dfs))))
 print(' '.join(list(map(str, ord_bfs))))
