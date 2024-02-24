@@ -1,61 +1,52 @@
 import sys
 from collections import deque
 
-n,m = map(int, sys.stdin.readline().split())
+n,m = map(int,sys.stdin.readline().split())
 
 graph = []
-for _ in range(m):
-    graph.append(list(sys.stdin.readline().rstrip()))
-
 visited = []
 for _ in range(m):
+    temp = list(sys.stdin.readline().rstrip())
+    graph.append(temp)
     visited.append([False]*n)
 
-def bfs(x,y):
-    if visited[y][x] == False:
-        deq = deque([[x,y]])
-        visited[y][x] = True
-        cnt = 1
-        while deq:
-            x,y = deq.popleft()
+res_w = 0 ; res_b = 0
+for y in range(m):
+    for x in range(n):
+        if not visited[y][x]:
+            deq = deque([])
+            deq.append([x,y])
+            cnt = 1
+            visited[y][x] = True
+            while deq:
+                a,b = deq.popleft()
+                if a+1 != n:
+                    if not visited[b][a+1] and graph[y][x] == graph[b][a+1]:
+                        deq.append([a+1,b])
+                        visited[b][a+1] = True
+                        cnt += 1
+                        
+                if a-1 >= 0:
+                    if not visited[b][a-1] and graph[y][x] == graph[b][a-1]:
+                        deq.append([a-1,b])
+                        visited[b][a-1] = True
+                        cnt += 1
+                        
+                if b+1 != m:
+                    if not visited[b+1][a] and graph[y][x] == graph[b+1][a]:
+                        deq.append([a,b+1])
+                        visited[b+1][a] = True
+                        cnt += 1
+                        
+                if b-1 >= 0:
+                    if not visited[b-1][a] and graph[y][x] == graph[b-1][a]:
+                        deq.append([a,b-1])
+                        visited[b-1][a] = True
+                        cnt += 1
+                
+            if graph[y][x] == 'W':
+                res_w += cnt**2
+            else:
+                res_b += cnt**2
 
-            if y+1 != m:
-                if graph[y+1][x] == graph[y][x] and visited[y+1][x] == False:
-                    deq.append([x,y+1])
-                    visited[y+1][x] = True
-                    cnt += 1
-
-            if y-1 != -1:
-                if graph[y-1][x] == graph[y][x] and visited[y-1][x] == False:
-                    deq.append([x,y-1])
-                    visited[y-1][x] = True
-                    cnt += 1
-
-            if x+1 != n:
-                if graph[y][x+1] == graph[y][x] and visited[y][x+1] == False:
-                    deq.append([x+1, y])
-                    visited[y][x+1] = True
-                    cnt += 1
-
-            if x-1 != -1:
-                if graph[y][x-1] == graph[y][x] and visited[y][x-1] == False:
-                    deq.append([x-1,y])
-                    visited[y][x-1] = True
-                    cnt += 1
-
-        return graph[y][x], cnt**2
-
-    else:
-        return 0,0
-
-cnt_W = 0
-cnt_B = 0
-for i in range(n):
-    for j in range(m):
-        a,b = bfs(i,j)
-        if a == 'W':
-            cnt_W += b
-        elif a == 'B':
-            cnt_B += b
-
-print(cnt_W, cnt_B)
+print(res_w, res_b)
