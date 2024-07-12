@@ -14,11 +14,9 @@ public class Main {
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
 			
-			sb.append("Case #").append(tc).append(": ").append(a).append(" + ").append(b).append(" = ").append(a + b);
-			
-			System.out.println(sb.toString());
-			sb.setLength(0);
+			sb.append("Case #").append(tc).append(": ").append(a).append(" + ").append(b).append(" = ").append(a + b).append("\n");
 		}
+		System.out.println(sb.toString());
 	}
 
 }
