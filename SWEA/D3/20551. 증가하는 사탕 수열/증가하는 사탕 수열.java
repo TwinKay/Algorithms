@@ -10,8 +10,9 @@ public class Solution {
 
     public static void main(String[] args) throws IOException {
         int testCase = Integer.parseInt(input.readLine());
+        sb = new StringBuilder();
         for (int tc=1; tc<testCase+1; tc++) {
-            sb = new StringBuilder();
+            sb.setLength(0);
             sb.append("#").append(tc).append(" ");
             tokens = new StringTokenizer(input.readLine());
             int a = Integer.parseInt(tokens.nextToken());
