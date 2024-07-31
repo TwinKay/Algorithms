@@ -1,4 +1,4 @@
-# [Silver III] 참외밭 - 2477 
+# [Silver II] 참외밭 - 2477 
 
 [문제 링크](https://www.acmicpc.net/problem/2477) 
 
@@ -8,7 +8,11 @@
 
 ### 분류
 
-기하학(geometry), 구현(implementation), 수학(math)
+기하학, 구현, 수학
+
+### 제출 일자
+
+2022년 8월 19일 16:56:30
 
 ### 문제 설명
 
