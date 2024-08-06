@@ -35,9 +35,9 @@ public class Main {
         int[] deltaY = {1,-1,0,0};
 
         // 없을 때 까지 계속 (flag)
-        while (flag==false){
+        while (!flag){
 
-            // 진화
+            // upsizing
             if (ateFish == size){
                 ateFish = 0;
                 size ++;
@@ -76,12 +76,9 @@ public class Main {
                                 if (temp[2]==cnt+1){
                                     int[] temp2 = {x+deltaX[i],y+deltaY[i],cnt+1};
                                     que.add(temp2);
-//                                    System.out.println(cand.size());
                                     cand.add(temp2);
                                     visited[y+deltaY[i]][x+deltaX[i]] = true;
                                 }else{
-//                                    que.clear(); // 할 필요가 있나..?
-//                                    break;
                                     int[] temp2 = {x+deltaX[i],y+deltaY[i],cnt+1};
                                     que.add(temp2);
                                     visited[y+deltaY[i]][x+deltaX[i]] = true;
@@ -95,19 +92,15 @@ public class Main {
                     }
                 }
             }
-            if (cand.isEmpty()==false){
+            if (!cand.isEmpty()){
                 Collections.sort(cand, new Comparator<int[]>() {
                     @Override
                     public int compare(int[] o1, int[] o2) {
                         return o1[1]!=o2[1] ? o1[1]-o2[1] : o1[0]-o2[0];
                     }
                 });
-//                que.clear(); // ?
                 ateFish ++;
                 graph[cand.get(0)[1]][cand.get(0)[0]] = 0;
-//                System.out.println("cnt = " + cnt);
-//                cnt ++;
-
                 cnt = cand.get(0)[2];
                 res += cnt;
                 idxSharkX = cand.get(0)[0];
