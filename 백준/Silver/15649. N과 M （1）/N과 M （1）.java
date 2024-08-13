@@ -7,8 +7,8 @@ public class Main {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static StringTokenizer tokens;
 
-    public static void Permu(int cnt, int[] arr, boolean[] visited, int[] save) {
-        if (cnt == save.length) {
+    public static void Permu(int cnt, int n, int m, int[] arr, boolean[] visited, int[] save) {
+        if (cnt == m) {
             for (int i=0; i<save.length; i++){
                 if (i == save.length-1){
                     System.out.println(save[i]);
@@ -18,13 +18,13 @@ public class Main {
             }
             return;
         }
-        for (int i = 0; i < visited.length; i++) {
+        for (int i = 0; i < n; i++) {
             if (visited[i]) {
                 continue;
             }
             visited[i] = true;
             save[cnt] = arr[i];
-            Permu(cnt + 1, arr, visited, save);
+            Permu(cnt + 1, n, m, arr, visited, save);
             visited[i] = false;
         }
     }
@@ -38,6 +38,6 @@ public class Main {
         for (int i = 0; i < n; i++) {
             arr[i] = i + 1;
         }
-        Permu(0, arr, new boolean[n], new int[m]);
+        Permu(0, n, m, arr, new boolean[n], new int[m]);
     }
 }
