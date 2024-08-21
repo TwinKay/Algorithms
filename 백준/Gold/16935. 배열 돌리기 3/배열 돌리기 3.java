@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
@@ -10,13 +10,14 @@ public class Main {
 
     static int n;
     static int m;
+    static int r;
     static int[][] graph;
 
     public static void main(String[] args) throws IOException {
         token = new StringTokenizer(input.readLine());
         n = Integer.parseInt(token.nextToken());
         m = Integer.parseInt(token.nextToken());
-        int r = Integer.parseInt(token.nextToken());
+        r = Integer.parseInt(token.nextToken());
 
         graph = new int[n][m];
         for (int i=0; i<n; i++){
@@ -27,19 +28,51 @@ public class Main {
         }
 
         token = new StringTokenizer(input.readLine());
+        int[] order = new int[r];
         for (int i=0; i<r; i++){
-            int order =  Integer.parseInt(token.nextToken());
-            if (order == 1){
+            order[i] = Integer.parseInt(token.nextToken());
+        }
+
+        List<Integer> orderList = new ArrayList<>();
+        int z = 0;
+        while (z < r) {
+            if (z+3 < r) {
+                if ((order[z] == 3 && order[z+1] == 3 && order[z+2] == 3 && order[z+3] == 3) ||
+                        (order[z] == 4 && order[z+1] == 4 && order[z+2] == 4 && order[z+3] == 4) ||
+                        (order[z] == 5 && order[z+1] == 5 && order[z+2] == 5 && order[z+3] == 5) ||
+                        (order[z] == 6 && order[z+1] == 6 && order[z+2] == 6 && order[z+3] == 6)) {
+                    z += 4;
+                    continue;
+                }
+            }
+            if (z+1 < r) {
+                if ((order[z] == 1 && order[z+1] == 1) ||
+                        (order[z] == 2 && order[z+1] == 2) ||
+                        (order[z] == 3 && order[z+1] == 4) ||
+                        (order[z] == 4 && order[z+1] == 3) ||
+                        (order[z] == 5 && order[z+1] == 6) ||
+                        (order[z] == 6 && order[z+1] == 5)) {
+                    z += 2;
+                    continue;
+                }
+            }
+            orderList.add(order[z]);
+            z++;
+        }
+
+        for (int i=0; i<orderList.size(); i++){
+            int ord = orderList.get(i);
+            if (ord == 1){
                 graph = cal1();
-            }else if (order == 2){
+            }else if (ord == 2){
                 graph = cal2();
-            }else if (order == 3){
+            }else if (ord == 3){
                 graph = cal3();
-            }else if (order == 4){
+            }else if (ord == 4){
                 graph = cal4();
-            }else if (order == 5){
+            }else if (ord == 5){
                 graph = cal5();
-            }else if (order == 6){
+            }else if (ord == 6){
                 graph = cal6();
             }
         }
