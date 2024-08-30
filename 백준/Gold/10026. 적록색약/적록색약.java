@@ -10,6 +10,7 @@ public class Main {
 
     static int n;
     static char[][] graph;
+    static boolean[][] graphD;
     static boolean[][] visited, visitedD;
     static int[] deltaX = {0, 0, -1, 1};
     static int[] deltaY = {1, -1, 0, 0};
@@ -20,6 +21,17 @@ public class Main {
         for (int i = 0; i < n; i++) {
             String s = input.readLine();
             graph[i] = s.toCharArray();
+        }
+
+        graphD = new boolean[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if(graph[i][j] == 'B') {
+                    graphD[i][j] = true;
+                }else{
+                    graphD[i][j] = false;
+                }
+            }
         }
 
         visited = new boolean[n][n];
@@ -40,7 +52,7 @@ public class Main {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (!visitedD[i][j]) {
-                    BFSD(i, j, graph[i][j]);
+                    BFSD(i, j, graphD[i][j]);
                     cnt++;
                 }
             }
@@ -69,7 +81,7 @@ public class Main {
         }
     }
 
-    public static void BFSD(int y, int x, char c) {
+    public static void BFSD(int y, int x, boolean b) {
         Deque<int[]> deq = new ArrayDeque<>();
         deq.addLast(new int[]{y, x});
         visitedD[y][x] = true;
@@ -81,17 +93,22 @@ public class Main {
                 int dx = curX + deltaX[i];
                 int dy = curY + deltaY[i];
 
-                if (c == 'G' || c == 'R') {
-                    if (isValid(dy, dx) && !visitedD[dy][dx] && (graph[dy][dx] == 'G' || graph[dy][dx] == 'R')) {
-                        deq.addLast(new int[]{dy, dx});
-                        visitedD[dy][dx] = true;
-                    }
-                } else {
-                    if (isValid(dy, dx) && !visitedD[dy][dx] && graph[dy][dx] == c) {
-                        deq.addLast(new int[]{dy, dx});
-                        visitedD[dy][dx] = true;
-                    }
+                if (isValid(dy, dx) && !visitedD[dy][dx] && graphD[dy][dx] == b) {
+                    deq.addLast(new int[]{dy, dx});
+                    visitedD[dy][dx] = true;
                 }
+
+//                if (b) {
+//                    if (isValid(dy, dx) && !visitedD[dy][dx] && (graph[dy][dx] == 'G' || graph[dy][dx] == 'R')) {
+//                        deq.addLast(new int[]{dy, dx});
+//                        visitedD[dy][dx] = true;
+//                    }
+//                } else {
+//                    if (isValid(dy, dx) && !visitedD[dy][dx] && graph[dy][dx] == c) {
+//                        deq.addLast(new int[]{dy, dx});
+//                        visitedD[dy][dx] = true;
+//                    }
+//                }
             }
         }
     }
