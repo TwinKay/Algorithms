@@ -8,7 +8,7 @@ public class Main {
     static StringTokenizer token;
 
     static List<int[]> paths;
-    static int[] parent, rank;
+    static int[] parent;
     static long res = 0;
 
     public static void main(String[] args) throws IOException {
@@ -35,7 +35,6 @@ public class Main {
         for (int i = 0; i< parent.length; i++) {
             parent[i] = i;
         }
-        rank = new int[v+1];
 
         for (int[] path : paths) {
             int a = path[0];
@@ -57,13 +56,6 @@ public class Main {
         x = find(x);
         y = find(y);
         if (x == y) return;
-        if(rank[x] > rank[y]){
-            parent[y] = x;
-        } else if(rank[x]==rank[y]){
-            parent[x] = y;
-            rank[y] ++;
-        } else {
-            parent[x] = y;
-        }
+        parent[y] = x;
     }
 }
