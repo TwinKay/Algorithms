@@ -42,6 +42,15 @@ public class Solution {
             }
 
             int res = 0;
+//            for (int k=1; k <= maxK; k++) {
+//                cost = k*k+(k-1)*(k-1);
+//                for (int i = 0; i < N; i++) {
+//                    for (int j = 0; j < N; j++) {
+//                        res = Math.max(res, cntHouse(i, j, k));
+//
+//                    }
+//                }
+//            }
             flag:
             for (int k=maxK; k >= 1; k--) {
                 cost = k*k+(k-1)*(k-1);
