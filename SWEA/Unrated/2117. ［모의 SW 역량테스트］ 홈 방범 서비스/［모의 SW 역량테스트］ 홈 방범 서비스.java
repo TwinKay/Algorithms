@@ -10,7 +10,7 @@ public class Solution {
     static StringTokenizer token;
     static StringBuilder sb = new StringBuilder();
 
-    static int N, M, numHouse, maxK, cost;
+    static int N, M, maxK, cost;
     static List<int[]> HouseIdx;
 
 
@@ -21,7 +21,6 @@ public class Solution {
             N = Integer.parseInt(token.nextToken());
             M = Integer.parseInt(token.nextToken());
 
-            numHouse = 0;
             HouseIdx = new ArrayList<>();
 
             for (int i = 0; i < N; i++) {
@@ -30,14 +29,13 @@ public class Solution {
                     int temp = Integer.parseInt(token.nextToken());
                     if (temp == 1) {
                         HouseIdx.add(new int[]{j, i});
-                        numHouse++;
                     }
                 }
             }
 
             // 미리 최대 k 계산
             maxK = 1;
-            while (maxK * maxK + (maxK - 1) * (maxK - 1) <= numHouse * M) {
+            while (maxK * maxK + (maxK - 1) * (maxK - 1) <= HouseIdx.size() * M) {
                 maxK++;
             }
 
