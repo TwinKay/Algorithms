@@ -10,7 +10,7 @@ public class Solution {
     static StringTokenizer token;
     static StringBuilder sb = new StringBuilder();
 
-    static int N, M, numHouse, maxK;
+    static int N, M, numHouse, maxK, cost;
     static List<int[]> HouseIdx;
 
 
@@ -43,6 +43,7 @@ public class Solution {
 
             int res = 0;
             for (int k=1; k <= maxK; k++) {
+                cost = k*k+(k-1)*(k-1);
                 for (int i = 0; i < N; i++) {
                     for (int j = 0; j < N; j++) {
                         res = Math.max(res, cntHouse(i, j, k));
@@ -63,7 +64,7 @@ public class Solution {
                 cnt++;
             }
         }
-        if (cnt*M >= k*k+(k-1)*(k-1)){
+        if (cnt*M >= cost){
             return cnt;
         }
         return 0;
