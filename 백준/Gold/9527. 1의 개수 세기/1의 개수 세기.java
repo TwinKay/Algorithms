@@ -1,4 +1,5 @@
 // 공식을 직접 만들어냈다..! ㅜ.ㅜ
+// 수정 - 비트연산자 사용, 반복 계산 제거
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,8 +13,7 @@ public class Main {
         token = new StringTokenizer(input.readLine());
         long a = Long.parseLong(token.nextToken());
         long b = Long.parseLong(token.nextToken());
-        long res = accumOne(b)-accumOne(a-1);
-        System.out.println(res);
+        System.out.println(accumOne(b)-accumOne(a-1));
     }
     public static long accumOne (long x){
         long cnt = 0;
@@ -21,8 +21,10 @@ public class Main {
         int bonus = 0;
         for (int i=0; i<stringA.length(); i++) {
             if (stringA.charAt(i) == '1') {
-                cnt += (long) (Math.pow(2,stringA.length()-i-1)*(stringA.length()-i-1)/2);
-                cnt += (long) (Math.pow(2,stringA.length()-i-1)*bonus);
+                long bitIdx = stringA.length()-i-1;
+                long powVal = (1L << bitIdx);
+                cnt += powVal * bitIdx / 2;
+                cnt += powVal * bonus;
                 bonus++;
             }
         }
