@@ -9,8 +9,8 @@ public class Solution {
     static StringBuilder sb = new StringBuilder();
 
     static int K;
-    static Deque<Integer> deq1R, deq2R, deq3R, deq4R, deq1L, deq2L, deq3L, deq4L;
-    
+    static Deque<Integer> deq1R, deq2R, deq3R, deq2L, deq3L, deq4L;
+
     public static void main(String[] args) throws IOException {
         int T = Integer.parseInt(input.readLine());
         for (int t=1; t<=T; t++) {
@@ -18,8 +18,6 @@ public class Solution {
             deq1R = new ArrayDeque<>();
             deq2R = new ArrayDeque<>();
             deq3R = new ArrayDeque<>();
-            deq4R = new ArrayDeque<>();
-            deq1L = new ArrayDeque<>();
             deq2L = new ArrayDeque<>();
             deq3L = new ArrayDeque<>();
             deq4L = new ArrayDeque<>();
@@ -28,7 +26,6 @@ public class Solution {
             for (int i=0; i<8; i++){
                 int temp = Integer.parseInt(token.nextToken());
                 deq1R.add(temp);
-                deq1L.add(temp);
             }
             token = new StringTokenizer(input.readLine());
             for (int i=0; i<8; i++){
@@ -45,15 +42,14 @@ public class Solution {
             token = new StringTokenizer(input.readLine());
             for (int i=0; i<8; i++){
                 int temp = Integer.parseInt(token.nextToken());
-                deq4R.add(temp);
                 deq4L.add(temp);
             }
 
             for (int i=0; i<2; i++){
-                rotateR(deq1R);rotateR(deq2R);rotateR(deq3R);rotateR(deq4R);
+                rotateR(deq1R);rotateR(deq2R);rotateR(deq3R);
             }
             for (int i=0; i<2; i++){
-                rotateL(deq1L);rotateL(deq2L);rotateL(deq3L);rotateL(deq4L);
+                rotateL(deq2L);rotateL(deq3L);rotateL(deq4L);
             }
 
             for (int k=0; k<K; k++){
@@ -117,11 +113,9 @@ public class Solution {
 
                 //orders로 rotate
                 if(orders[0]==1){
-                    rotateL(deq1L);
                     rotateL(deq1R);
 
                 }else if (orders[0]==-1){
-                    rotateR(deq1L);
                     rotateR(deq1R);
                 }
                 if(orders[1]==1){
@@ -140,22 +134,20 @@ public class Solution {
                 }
                 if(orders[3]==1){
                     rotateL(deq4L);
-                    rotateL(deq4R);
                 }else if (orders[3]==-1){
                     rotateR(deq4L);
-                    rotateR(deq4R);
                 }
             }
             // 회전 끝, 위를 보도록
             for (int i=0; i<2; i++){
-                rotateL(deq1R);rotateL(deq2R);rotateL(deq3R);rotateL(deq4R);
+                rotateL(deq1R);rotateL(deq2R);rotateL(deq3R);rotateR(deq4L);
             }
             int res = 0;
             int head1, head2, head3, head4;
             head1 = deq1R.peekFirst();
             head2 = deq2R.peekFirst();
             head3 = deq3R.peekFirst();
-            head4 = deq4R.peekFirst();
+            head4 = deq4L.peekFirst();
             if (head1==1){
                 res += 1;
             }
