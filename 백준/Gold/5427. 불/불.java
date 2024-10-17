@@ -63,7 +63,7 @@ public class Main {
                 for (int i=0; i<4; i++){
                     int dx = x+deltaX[i];
                     int dy = y+deltaY[i];
-                    if (isValid(dx,dy) && graph[dy][dx]=='.' && fireTime[dy][dx]==-1){
+                    if (graph[dy][dx]=='.' && fireTime[dy][dx]==-1){
                         deq.addLast(new int[]{dx,dy,cnt+1});
                         fireTime[dy][dx] = cnt+1;
                     }
@@ -88,7 +88,7 @@ public class Main {
                         res = cnt+1;
                         break flag;
                     }
-                    if (isValid(dx,dy) && graph[dy][dx]=='.' && !visited[dy][dx] && (fireTime[dy][dx]>cnt+1 || fireTime[dy][dx]==-1)){
+                    if (graph[dy][dx]=='.' && !visited[dy][dx] && (fireTime[dy][dx]>cnt+1 || fireTime[dy][dx]==-1)){
                         deq.addLast(new int[]{dx,dy,cnt+1});
                         visited[dy][dx] = true;
                     }
@@ -101,8 +101,5 @@ public class Main {
                 System.out.println(res);
             }
         }
-    }
-    static boolean isValid(int x, int y){
-        return x>=0 && x<M && y>=0 && y<N;
     }
 }
