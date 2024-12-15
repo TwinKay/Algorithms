@@ -8,11 +8,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         int N = Integer.parseInt(input.readLine());
         String s = input.readLine();
-        char[] chars = s.toCharArray();
-        int oCnt = 0;
-        for (char c : chars) {
-            if (c == 'o') oCnt++;
-        }
+        int oCnt = s.length() - s.replace("o", "").length();
         System.out.println(2*N-oCnt);
     }
 }
