@@ -10,7 +10,7 @@ class Solution {
         minDiscountIndex = getMinDiscountIndex(users);
 
         int[] selectedDiscounts = new int[emoticons.length];
-        findBestDiscountCombination(selectedDiscounts, 0, users, emoticons);
+        Combination(selectedDiscounts, 0, users, emoticons);
 
         return new int[]{maxSubscribers, maxRevenue};
     }
@@ -28,20 +28,20 @@ class Solution {
         return 0;
     }
 
-    private void findBestDiscountCombination(int[] selectedDiscounts, int index, int[][] users, int[] emoticons) {
+    private void Combination(int[] selectedDiscounts, int index, int[][] users, int[] emoticons) {
         if (index == emoticons.length) {
-            calculateRevenueAndSubscribers(users, emoticons, selectedDiscounts);
+            calculate(users, emoticons, selectedDiscounts);
             return;
         }
 
         for (int i = minDiscountIndex; i < discountRates.length; i++) {
             selectedDiscounts[index] = discountRates[i];
-            findBestDiscountCombination(selectedDiscounts, index + 1, users, emoticons);
+            Combination(selectedDiscounts, index + 1, users, emoticons);
         }
     }
 
-    private void calculateRevenueAndSubscribers(int[][] users, int[] emoticons, int[] discounts) {
-        int subscriberCount = 0;
+    private void calculate(int[][] users, int[] emoticons, int[] discounts) {
+        int subscriberCnt = 0;
         int revenue = 0;
 
         for (int[] user : users) {
@@ -56,15 +56,15 @@ class Solution {
             }
 
             if (totalSpent >= maxBudget) {
-                subscriberCount++;
+                subscriberCnt++;
             } else {
                 revenue += totalSpent;
             }
         }
 
-        if (subscriberCount > maxSubscribers || 
-            (subscriberCount == maxSubscribers && revenue > maxRevenue)) {
-            maxSubscribers = subscriberCount;
+        if (subscriberCnt > maxSubscribers || 
+            (subscriberCnt == maxSubscribers && revenue > maxRevenue)) {
+            maxSubscribers = subscriberCnt;
             maxRevenue = revenue;
         }
     }
