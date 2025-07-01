@@ -42,6 +42,7 @@ public class Main {
         Deque<int[]> deq = new ArrayDeque<>();
         deq.addLast(new int[]{enterX, enterY, 0, 1}); // x y magic len
         visited[enterY][enterX][0] = true;
+        flag:
         while (!deq.isEmpty()) {
             int[] cur = deq.pollFirst();
             int x = cur[0];
@@ -58,14 +59,14 @@ public class Main {
                         visited[dy][dx][magic] = true;
                         if (isExit(dx,dy)){
                             res = Math.min(res,len);
-                            break;
+                            break flag;
                         }
                     }else if (graph[dy][dx] == 1 && magic==0  && !visited[dy][dx][magic+1]){
                         deq.addLast(new int[]{dx,dy,magic+1,len+1});
                         visited[dy][dx][magic] = true;
                         if (isExit(dx,dy)){
                             res = Math.min(res,len);
-                            break;
+                            break flag;
                         }
                     }
                 }
