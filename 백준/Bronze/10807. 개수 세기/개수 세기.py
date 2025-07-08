@@ -1,12 +1,10 @@
-# 시험기간
 import sys
 
-n = int(sys.stdin.readline())
-l = list(map(int, sys.stdin.readline().split()))
-v = int(sys.stdin.readline())
-cnt = 0
-for i in l:
-    if i == v:
-        cnt += 1
-
-print(cnt)
+N = int(sys.stdin.readline())
+arr = list(map(int, sys.stdin.readline().split()))
+V = int(sys.stdin.readline())
+res = 0
+for i in arr:
+    if i == V:
+        res += 1
+print(res)
