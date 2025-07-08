@@ -1,19 +1,19 @@
-alpha = ["A","B","C","D","E","F","G","H",'I',"J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+import sys
 
-s = input()
+s = sys.stdin.readline().rstrip()
 s = s.upper()
+map = {}
+for c in s:
+    map[c] = map.setdefault(c,0)+1
 
-L = list(s)
-
-result = []
-
-for i in alpha:
-    a = L.count(i)
-    result.append(a)
-    
-if result.count(max(result)) > 1:
-    print("?")
-
+lst = []
+for key in map.keys():
+    lst.append([map[key],key])
+lst.sort(reverse=True)
+if len(lst)==1:
+    print(lst[0][1])
 else:
-    n = result.index(max(result))
-    print(alpha[n])
+    if lst[0][0] == lst[1][0]:
+        print("?")
+    else:
+        print(lst[0][1])
