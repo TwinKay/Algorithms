@@ -1,10 +1,6 @@
 import sys
 
-n = int(sys.stdin.readline())
-
-for _ in range(n):
+T = int(sys.stdin.readline())
+for _ in range(T):
     s = sys.stdin.readline().rstrip()
-    result = []
-    result.append(s[0])
-    result.append(s[-1])
-    print(''.join(result))
+    print(f'{s[0]}{s[len(s)-1]}')
