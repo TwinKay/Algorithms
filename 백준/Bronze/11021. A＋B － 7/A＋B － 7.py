@@ -1,6 +1,6 @@
 import sys
 
-t = int(input())
-for i in range(t):
+T = int(sys.stdin.readline())
+for t in range(1,T+1):
     a,b = map(int, sys.stdin.readline().split())
-    print("Case #"+str(i+1)+": "+str(a+b))
+    print(f'Case #{t}: {a+b}')
