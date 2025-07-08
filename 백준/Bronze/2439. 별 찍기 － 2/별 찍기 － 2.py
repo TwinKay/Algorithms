@@ -1,4 +1,5 @@
-n = int(input())
+import sys
 
-for i in range(n):
-    print(" "*(n-i-1)+"*"*(i+1))
+N = int(sys.stdin.readline())
+for i in range(1,N+1):
+    print(f'{" "*(N-i)}{"*"*i}')
