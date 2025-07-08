@@ -1,11 +1,13 @@
-score = int(input())
-if score >= 90:
+import sys
+
+a = int(sys.stdin.readline())
+if a>=90:
     print("A")
-elif 80 <= score <= 89:
+elif a>=80:
     print("B")
-elif 70 <= score <= 79:
+elif a>=70:
     print("C")
-elif 60 <= score <= 69:
+elif a>=60:
     print("D")
 else:
     print("F")
