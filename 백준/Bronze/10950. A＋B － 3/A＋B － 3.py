@@ -1,5 +1,6 @@
-T = int(input())
+import sys
 
-for i in range(T):
-    a, b = map(int, input().split())
+T = int(sys.stdin.readline())
+for _ in range(T):
+    a,b = map(int,sys.stdin.readline().split())
     print(a+b)
