@@ -1,20 +1,13 @@
-n,m = map(int,input().split())
-card_list = list(map(int,input().split()))
-result = []
+import sys
 
-for i in card_list:
-    for j in card_list:
-        for k in card_list:
-            if i == j or j == k or i ==k:
-                pass
-            else:
-                result.append(i+j+k)
+N,M = map(int, sys.stdin.readline().split())
+arr = list(map(int, sys.stdin.readline().split()))
+res = -1
+for i in range(N):
+    for j in range(i+1,N):
+        for k in range(j+1,N):
+            total = arr[i]+arr[j]+arr[k]
+            if total<=M and total>res:
+                res = total
                 
-result = list(set(result))
-result_2 = []
-
-for i in result:
-    if i <= m:
-        result_2.append(i)
-
-print(max(result_2))
+print(res)
