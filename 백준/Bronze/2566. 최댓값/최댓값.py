@@ -1,13 +1,15 @@
 import sys
 
-l = []
+graph = []
 for _ in range(9):
-    l.append(list(map(int, sys.stdin.readline().split())))
-
-m = 0
-for i in l:
-    m = max(m, max(i))
-print(m)
-for j,i in enumerate(l):
-    if m in i:
-        print(j+1, i.index(m)+1)
+    graph.append(list(map(int, sys.stdin.readline().split())))
+    
+max = -1
+x = -1; y = -1
+for i in range(9):
+    for j in range(9):
+        if graph[i][j] > max:
+            max = graph[i][j]
+            x = j; y = i
+print(max)
+print(f'{y+1} {x+1}')
