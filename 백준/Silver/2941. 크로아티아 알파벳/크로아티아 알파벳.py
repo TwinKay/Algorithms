@@ -1,22 +1,18 @@
-L = ["c=", "c-", "dz=", "d-", "lj", "nj", "s=", "z="]
-c = 0
+import sys
 
-s = input()
+s = sys.stdin.readline().rstrip()
 
-while True:
-    if len(s) == 0:
-        break
-        
+res = 0
+i = 0
+while i < len(s):
+    if i + 2 < len(s) and s[i:i+3] == "dz=":
+        res += 1
+        i += 3
+    elif i + 1 < len(s) and s[i:i+2] in ["c=", "c-", "d-", "lj", "nj", "s=", "z="]:
+        res += 1
+        i += 2
     else:
-        
-        if s[0:2] in L:
-            c = c+1
-            s = s[2:]
-        elif s[0:3] in L:
-            c = c+1
-            s = s[3:]
-        else:
-            c = c+1
-            s = s[1:]
+        res += 1
+        i += 1
 
-print(c)
+print(res)
