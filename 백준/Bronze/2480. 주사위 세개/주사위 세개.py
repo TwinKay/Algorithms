@@ -1,17 +1,12 @@
-a ,b, c = map(int, input().split())
+import sys
 
-if a==b or a==c or b==c:
-    if a==b==c:
-        money = 10000+a*1000
-    
-    else:
-        if a==b:
-            money = 1000+a*100
-        elif a==c:
-            money = 1000+a*100
-        else:
-            money = 1000+b*100
+arr = list(map(int,sys.stdin.readline().split()))
+arr.sort(reverse=True)
+if arr[0]==arr[1] and arr[1]==arr[2] and arr[0]==arr[2]:
+    print(10000+arr[0]*1000)
+elif arr[0]==arr[1]:
+    print(1000+arr[0]*100)
+elif arr[1]==arr[2]:
+    print(1000+arr[1]*100)
 else:
-    money = max(a,b,c)*100
-
-print(str(money))
+    print(arr[0]*100)
