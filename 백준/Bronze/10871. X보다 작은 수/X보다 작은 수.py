@@ -1,8 +1,9 @@
-a,b = map(int, input().split())
+import sys
 
-c = input().split()
-c = list(map(int,c))
-
-for i in c:
-    if i<b:
-        print(i, end=" ")
+N,X = map(int, sys.stdin.readline().split())
+arr = list(map(int, sys.stdin.readline().split()))
+res = []
+for i in arr:
+    if i < X:
+        res.append(i)
+print(' '.join(map(str,res)))
