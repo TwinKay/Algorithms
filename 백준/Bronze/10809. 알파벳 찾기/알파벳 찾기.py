@@ -1,15 +1,8 @@
-s = input()
-s = list(s)
-alpha = ["a","b","c","d","e","f","g","h",'i',"j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+import sys
 
-for i in alpha:
-    if i == "z":
-        if i in s:
-            print(s.index(i),end='')
-        else:
-            print(-1,end='')
-    else:
-        if i in s:
-            print(s.index(i),end=' ')
-        else:
-            print(-1,end=' ')
+s = sys.stdin.readline().rstrip()
+arr = list(-1 for _ in range(26))
+for i in range(len(s)):
+    if arr[ord(s[i])-97] == -1:
+        arr[ord(s[i])-97] = i
+print(" ".join(map(str,arr)))
