@@ -1,19 +1,13 @@
 import sys
 
-n, k = map(int, sys.stdin.readline().split())
-total = []
-for _ in range(n):
-    total.append(int(sys.stdin.readline()))
+N, K = map(int, sys.stdin.readline().split())
+coins = [int(sys.stdin.readline()) for _ in range(N)]
+coins.sort(reverse=True)
 
-t = 0
-while True:
-    if k == 0:
-        break
-    elif k >= total[n-1]:
-        t += k // total[n-1]
-        k = k % total[n-1]
+cnt = 0
+for coin in coins:
+    if K >= coin:
+        cnt += K // coin
+        K %= coin
 
-    else:
-        n -= 1
-
-print(t)
+print(cnt)
