@@ -1,13 +1,12 @@
-ans = int(input())
-result = 0
-t = int(input())
+import sys
 
-for i in range(t):
-    a,b = map(int,input().split())
-    c = a*b
-    result = result + c
-    
-if ans == result:
+X = int(sys.stdin.readline())
+N = int(sys.stdin.readline())
+total_price = 0
+for _ in range(N):
+    a,b = map(int, sys.stdin.readline().split())
+    total_price += a*b
+if X==total_price:
     print("Yes")
 else:
     print("No")
