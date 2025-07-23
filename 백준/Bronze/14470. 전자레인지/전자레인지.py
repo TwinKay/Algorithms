@@ -6,12 +6,11 @@ C = int(sys.stdin.readline())
 D = int(sys.stdin.readline())
 E = int(sys.stdin.readline())
 
-total_time = 0
-if A < 0:
-    total_time += (-A) * C
-    total_time += D
-    total_time += B * E
+res = 0
+if A<0:
+    res += (0-A)*C
+    res += D
+    res += (B-0)*E
 else:
-    total_time += (B - A) * E
-
-print(total_time)
+    res += (B-A)*E
+print(res)
