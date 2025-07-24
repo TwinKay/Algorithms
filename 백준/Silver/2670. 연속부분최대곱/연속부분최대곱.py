@@ -1,7 +1,9 @@
 import sys
 
 N = int(sys.stdin.readline())
-arr = [float(sys.stdin.readline()) for _ in range(N)]
+arr = []
+for _ in range(N):
+    arr.append(float(sys.stdin.readline()))
 
 dp = [0.0] * N
 dp[0] = arr[0]
