@@ -1,60 +1,46 @@
+'''
+BFS를 통한 풀이
+4방 탐색
+꼭 Group ID 부여 필요 X -> visited으로 방문 안하면 된다
+'''
 import sys
 from collections import deque
 
-n = int(sys.stdin.readline())
+# 가능한 범위
+def is_valid(x,y):
+    return 0<=x<N and 0<=y<N
 
+# 4방 탐색
+delta_x = [0,0,-1,1]
+delta_y = [1,-1,0,0]
+
+N = int(sys.stdin.readline())
 graph = []
-for _ in range(n):
-    graph.append(list(map(int, sys.stdin.readline().rstrip())))
-
 visited = []
-for _ in range(n):
-    visited.append([False]*n)
+for _ in range(N):
+    graph.append(list(map(int, list(sys.stdin.readline().rstrip()))))
+    visited.append([False]*N)
 
-def bfs(a,b):
-    if visited[b][a] == False and graph[b][a] == 1:
-        deq = deque([])
-        deq.append([a,b])
-        visited[b][a] = True
-        cnt = 1
-
-        while deq:
-            x,y = deq.popleft()
-
-            if y+1 != n:
-                if visited[y+1][x] == False and graph[y+1][x] == 1:
-                    deq.append([x,y+1])
-                    visited[y+1][x] = True
-                    cnt += 1
-
-            if y-1 != -1:
-                if visited[y-1][x] == False and graph[y-1][x] == 1:
-                    deq.append([x,y-1])
-                    visited[y-1][x] = True
-                    cnt += 1
-
-            if x+1 != n:
-                if visited[y][x+1] == False and graph[y][x+1] == 1:
-                    deq.append([x+1, y])
-                    visited[y][x+1] = True
-                    cnt += 1
-
-            if x-1 != -1:
-                if visited[y][x-1] == False and graph[y][x-1] == 1:
-                    deq.append([x-1,y])
-                    visited[y][x-1] = True
-                    cnt += 1
-        return cnt
-    return 0
-
-result = []
-for i in range(n):
-    for j in range(n):
-        m = bfs(i,j)
-        if m != 0:
-            result.append(m)
-
-result.sort()
-print(len(result))
-for i in result:
-    print(i)
+res = [] # 정답 넣을 list
+for i in range(N):
+    for j in range(N):
+        if graph[i][j] == 1 and not visited[i][j]: # 집, 방문 X 경우만
+            cnt = 0
+            deq = deque()
+            deq.append([j,i])
+            visited[i][j] = True
+            while deq:
+                cur = deq.popleft()
+                cnt += 1
+                for k in range(4):
+                    dx = cur[0] + delta_x[k]
+                    dy = cur[1] + delta_y[k]
+                    if is_valid(dx,dy) and graph[dy][dx] == 1 and not visited[dy][dx]: # 가능한 범위, 집, 방문 X
+                        deq.append([dx,dy])
+                        visited[dy][dx] = True
+            res.append(cnt)
+            
+res.sort() # 정답 정렬해서 제출
+print(len(res))
+for r in res:
+    print(r)
