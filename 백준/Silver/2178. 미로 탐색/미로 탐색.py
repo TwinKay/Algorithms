@@ -1,43 +1,39 @@
+'''
+BFS를 통한 풀이
+입구가 출구인 경우 X
+입구나 출구가 벽인 경우 X
+=>항상 도착위치로 이동 가능
+'''
 import sys
 from collections import deque
 
-n,m = map(int, sys.stdin.readline().split())
+# 가능한 범위
+def is_valid(x,y):
+    return 0<=x<M and 0<=y<N
 
+# 4방 탐색
+delta_x = [0,0,-1,1]
+delta_y = [1,-1,0,0]
+
+N,M = map(int, input().split())
 graph = []
-for _ in range(n):
-    graph.append(list(map(int, list(sys.stdin.readline().rstrip()))))
-
 visited = []
-for _ in range(n):
-    visited.append([False]*m)
+for _ in range(N):
+    graph.append(list(map(int,list(sys.stdin.readline().rstrip()))))
+    visited.append([False]*M)
 
-deq = deque([[0,0]])
-
+deq = deque()
+deq.append([0,0,1]) #x y time(길이)
+visited[0][0] = True
 while deq:
-    x,y = deq.popleft()
-
-    if y != n-1:
-        if visited[y+1][x] == False and graph[y+1][x] != 0:
-            graph[y+1][x] = graph[y][x] + 1
-            deq.append([x,y+1])
-            visited[y+1][x] = True
-
-    if y != 0:
-        if visited[y-1][x] == False and graph[y-1][x] != 0:
-            graph[y-1][x] = graph[y][x] + 1
-            deq.append([x, y-1])
-            visited[y-1][x] = True
-
-    if x != m-1:
-        if visited[y][x+1] == False and graph[y][x+1] != 0:
-            graph[y][x+1] = graph[y][x] + 1
-            deq.append([x+1, y])
-            visited[y][x+1] = True
-
-    if x != 0:
-        if visited[y][x-1] == False and graph[y][x-1] != 0:
-            graph[y][x-1] = graph[y][x] + 1
-            deq.append([x-1, y])
-            visited[y][x-1] = True
-
-print(graph[n-1][m-1])
+    cur = deq.popleft()
+    time = cur[2]
+    if cur[0] == M-1 and cur[1] == N-1: # 도착
+        print(time)
+        break
+    for k in range(4):
+        dx = cur[0] + delta_x[k]
+        dy = cur[1] + delta_y[k]
+        if is_valid(dx,dy) and graph[dy][dx] == 1 and not visited[dy][dx]: # 가능한 범위, 길, 방문 X
+            deq.append([dx,dy,time+1])
+            visited[dy][dx] = True
