@@ -2,6 +2,7 @@
 BFS를 통한 풀이
 8방 탐색
 시작 위치랑 도착 위치가 같을 수 있음
+visited를 그래프로 이용
 '''
 import sys
 from collections import deque
@@ -17,8 +18,8 @@ delta_y = [-1,-2,-2,-1,1,2,2,1]
 T = int(sys.stdin.readline())
 for t in range(T):
     N = int(sys.stdin.readline())
-    start_x,start_y = map(int,sys.stdin.readline().split())
-    end_x,end_y = map(int,sys.stdin.readline().split())
+    start_x,start_y = map(int,sys.stdin.readline().split()) # 시작 idx
+    end_x,end_y = map(int,sys.stdin.readline().split()) # 도착 idx
 
     visited = []
     for _ in range(N):
@@ -30,7 +31,7 @@ for t in range(T):
     while deq:
         cur = deq.popleft()
         time = cur[2]
-        if cur[0] == end_x and cur[1] == end_y:
+        if cur[0] == end_x and cur[1] == end_y: # 도착하면
             print(time)
             break
         for k in range(8):
@@ -39,6 +40,3 @@ for t in range(T):
             if is_valid(dx,dy) and not visited[dy][dx]:
                 deq.append([dx,dy,time+1])
                 visited[dy][dx] = True
-
-
-
