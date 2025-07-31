@@ -1,41 +1,47 @@
+'''
+아이디어:
+bfs를 통한 풀이
+단방향! b->a
+max에 해당하는 컴퓨터 번호를 오름차순으로 출력 -> sort 필요 없음
+'''
+
 import sys
 from collections import deque
 
-n,m = map(int, sys.stdin.readline().split())
+def bfs(c):
+    visited = [False] * (N + 1)
+    cnt = 0
+    deq = deque()
+    deq.append(c)
+    visited[c] = True
+    while deq:
+        cur = deq.popleft()
+        cnt += 1
+        for nx in graph[cur]:
+            if not visited[nx]:
+                deq.append(nx)
+                visited[nx] = True
+    return cnt
 
+
+N,M = map(int, sys.stdin.readline().split())
 graph = []
-for _ in range(n+1):
+for _ in range(N+1):
     graph.append([])
 
-for _ in range(m):
+for _ in range(M):
     a,b = map(int, sys.stdin.readline().split())
     graph[b].append(a)
 
-result = [0]*(n+1)
+max_val = -1 # dummy
+max_arr = []
+for n in range(1,N+1):
+    cnt = bfs(n)
+    if cnt > max_val:
+        max_val = cnt
+        max_arr = [n]
+    elif cnt == max_val:
+        max_arr.append(n)
 
-def dfs(r):
-    visited = [False] * (n + 1)
+print(*max_arr) # 정렬 필요 x
 
-    deq = deque([])
-    deq.append(r)
-    visited[r] = True
-
-    while deq:
-        a = deq.popleft()
-        for i in graph[a]:
-            if not visited[i]:
-                deq.append(i)
-                visited[i] = True
-
-    return visited.count(True)
-
-for i in range(n+1):
-    result[i] += dfs(i)
-
-result_print = []
-m = max(result)
-for i,j in enumerate(result[1:]):
-    if j==m:
-        result_print.append(i+1)
-
-print(*result_print, sep=' ')
