@@ -1,65 +1,58 @@
+'''
+아이디어:
+bfs를 통한 풀이
+높이 min,max로 제한해서 구해보기
+bfs 횟수로 안전구역 갯수 확인
+'''
+
 import sys
 from collections import deque
 
-n = int(sys.stdin.readline())
+# 가능한 범위
+def is_valid(x,y):
+    return 0<=x<N and 0<=y<N
 
+
+delta_x = [0,0,-1,1]
+delta_y = [1,-1,0,0]
+
+N = int(sys.stdin.readline())
 graph = []
-for _ in range(n):
+for _ in range(N):
     graph.append(list(map(int, sys.stdin.readline().split())))
 
-def bfs(x,y,h):
-    if graph[y][x] > h and visited[y][x] == False:
+# 높이 min,max로 제
+min_height = 1000
+max_height = -1
+for g in graph:
+    for i in g:
+        min_height = min(min_height,i)
+        max_height = max(max_height,i)
 
-        deq = deque([[x,y]])
-        visited[y][x] = True
-
-        while deq:
-            x,y = deq.popleft()
-
-            if x-1 != -1:
-                if visited[y][x-1] == False:
-                    visited[y][x-1] = True
-                    if graph[y][x-1] > h:
-                        deq.append([x-1, y])
-
-            if y-1 != -1:
-                if visited[y-1][x] == False:
-                    visited[y-1][x] = True
-                    if graph[y-1][x] > h:
-                        deq.append([x, y-1])
-
-            if x+1 != n:
-                if visited[y][x+1] == False:
-                    visited[y][x+1] = True
-                    if graph[y][x+1] > h:
-                        deq.append([x+1, y])
-
-            if y+1 != n:
-                if visited[y+1][x] == False:
-                    visited[y+1][x] = True
-                    if graph[y+1][x] > h:
-                        deq.append([x, y + 1])
-        return 1
-
-    else:
-        return 0
-
-result = []
-
-for i in range(1,101):
-    cnt = 0
+max_cnt = 0
+for height in range(min_height-1,max_height+1,1):
     visited = []
+    for _ in range(N):
+        visited.append([False]*N)
 
-    for _ in range(n):
-        visited.append([False] * n)
+    cnt = 0
+    for i in range(N):
+        for j in range(N):
+            if graph[i][j] > height and not visited[i][j]: # 안전지대, 방문x
+                deq = deque()
+                deq.append([j,i])
+                visited[i][j] = True
+                while deq:
+                    cur = deq.popleft()
+                    for k in range(4):
+                        dx = cur[0] + delta_x[k]
+                        dy = cur[1] + delta_y[k]
+                        if is_valid(dx,dy) and graph[dy][dx] > height and not visited[dy][dx]: # 가능범위, 안전지대, 방문x
+                            deq.append([dx,dy])
+                            visited[dy][dx] = True
 
-    for j in range(n):
-        for k in range(n):
-            cnt += bfs(k,j,i)
-    result.append(cnt)
+                cnt += 1
 
+    max_cnt = max(max_cnt,cnt)
 
-if max(result) == 0:
-    print(1)
-else:
-    print(max(result))
+print(max_cnt)
