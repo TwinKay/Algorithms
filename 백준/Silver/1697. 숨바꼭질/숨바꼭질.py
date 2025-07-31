@@ -1,29 +1,29 @@
+'''
+아이디어:
+bfs를 통한 풀이
+*2하고 -1계속하는 경우 있음으로 범위 넓게 설정
+'''
+
 import sys
 from collections import deque
 
-n,k = map(int, sys.stdin.readline().split())
-visited = [0]*100001
+def is_valid(x):
+    return 0<=x<100_001*2
 
+N,K = map(int, sys.stdin.readline().split())
 
-def bfs(n):
-    deq = deque([n])
-    visited[n] = 1
-    while deq:
-        a = deq.popleft()
-        if a == k:
-            print(visited[a]-1)
-            break
-        else:
-            if 0 <= a-1 <= 100000 and visited[a-1] == 0:
-                deq.append(a-1)
-                visited[a-1] = visited[a] + 1
+visited = [False]*(100_001*2)
+deq = deque()
+deq.append([N,0])
+while deq:
+    cur = deq.popleft()
 
-            if 0 <= a+1 <= 100000 and visited[a+1] == 0:
-                deq.append(a+1)
-                visited[a+1] = visited[a] + 1
+    if cur[0] == K:
+        print(cur[1])
+        break
 
-            if 0 <= a*2 <= 100000 and visited[a*2] == 0:
-                deq.append(a*2)
-                visited[a*2] = visited[a] + 1
-
-bfs(n)
+    ns = [cur[0]-1,cur[0]+1,cur[0]*2]
+    for n in ns:
+        if is_valid(n) and not visited[n]:
+            deq.append([n,cur[1]+1])
+            visited[n] = True
