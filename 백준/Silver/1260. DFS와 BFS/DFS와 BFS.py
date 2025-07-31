@@ -1,48 +1,55 @@
+'''
+아이디어:
+단순 dfs,bfs
+'''
+
 import sys
 from collections import deque
 
-n,m,r = map(int, sys.stdin.readline().split())
 
-visited_dfs = [False]*(n+1)
-visited_bfs = [False]*(n+1)
-v = []
-ord_dfs = []
-ord_bfs = []
+sys.setrecursionlimit(10000)
 
-for _ in range(n+1):
-    v.append([])
+def dfs(c):
+    visited[c] = True
+    dfs_res.append(c)
+    for n in graph[c]:
+        if not visited[n]:
+            dfs(n)
 
-for _ in range(m):
-    a,b = map(int, sys.stdin.readline().split())
-    v[a].append(b)
-    v[b].append(a)
-
-for i in v:
-    i.sort()
-
-def dfs(r):
-    visited_dfs[r] = True
-    ord_dfs.append(r)
-
-    for i in v[r]:
-        if not visited_dfs[i]:
-            dfs(i)
-
-def bfs():
-    deq = deque([r])
-    visited_bfs[r] = True
-
+def bfs(c):
+    deq = deque()
+    deq.append(c)
+    visited[c] = True
     while deq:
-        a = deq.popleft()
-        ord_bfs.append(a)
+        cur = deq.popleft()
+        bfs_res.append(cur)
+        for n in graph[cur]:
+            if not visited[n]:
+                deq.append(n)
+                visited[n] = True
 
-        for i in v[a]:
-            if not visited_bfs[i]:
-                deq.append(i)
-                visited_bfs[i] = True
 
-dfs(r)
-bfs()
+N,M,V = map(int, sys.stdin.readline().split())
+graph = []
+for _ in range(N+1):
+    graph.append([])
 
-print(' '.join(list(map(str, ord_dfs))))
-print(' '.join(list(map(str, ord_bfs))))
+
+for _ in range(M):
+    a,b = map(int, sys.stdin.readline().split())
+    graph[a].append(b)
+    graph[b].append(a)
+
+for g in graph:
+    g.sort() # 방문 우선순위
+
+dfs_res = []
+bfs_res = []
+
+visited = [False]*(N+1)
+dfs(V)
+visited = [False]*(N+1)
+bfs(V)
+
+print(*dfs_res)
+print(*bfs_res)
