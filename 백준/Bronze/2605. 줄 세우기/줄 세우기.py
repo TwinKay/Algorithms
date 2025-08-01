@@ -1,11 +1,9 @@
 import sys
 
-n = int(sys.stdin.readline())
-line = list(map(int,sys.stdin.readline().split()))
-res = []
+N = int(sys.stdin.readline())
+arr = list(map(int,sys.stdin.readline().split()))
 
-for i in range(n):
-    res.insert(i-line[i],i+1)
-res = list(map(str,res))
-
-print(' '.join(res))
+res_arr = []
+for i in range(N):
+    res_arr.insert(arr[i],i+1)
+print(*res_arr[::-1])
