@@ -1,30 +1,31 @@
+'''
+bfs를 통한 해결
+S==G인 경우도 있을 수 있음
+없으면 use the stairs
+'''
 import sys
 from collections import deque
 
-f,s,g,u,d = map(int,sys.stdin.readline().split())
-visited = [False]*(f+1)
-visited[0] = True
+F,S,G,U,D = map(int, sys.stdin.readline().split())
 
-deq = deque([[s,0]])
-visited[s] = True
-
+visited = [False]*(F+1)
+deq = deque()
+deq.append([S,0])
+visited[S] = True
 while deq:
-    s,cnt = deq.popleft()
+    cur = deq.popleft()
+    d = cur[0]-D
+    u = cur[0]+U
 
-    if s == g:
-        res = cnt
+    if cur[0] == G: # 도착
+        print(cur[1])
         break
+    if d>0 and not visited[d]: # 범위 안, 방문 x
+        deq.append([d,cur[1]+1])
+        visited[d] = True
+    if u<=F and not visited[u]: # 범위 안, 방문 x
+        deq.append([u,cur[1]+1])
+        visited[u] = True
 
-    us = s+u ; ds = s-d
-    if 1 <= us <= f:
-        if not visited[us]:
-            deq.append([us,cnt+1])
-            visited[us] = True
-    if 1 <= ds <= f:
-        if not visited[ds]:
-            deq.append([ds,cnt+1])
-            visited[ds] = True
-try:
-    print(res)
-except:
+if not visited[G]:
     print('use the stairs')
