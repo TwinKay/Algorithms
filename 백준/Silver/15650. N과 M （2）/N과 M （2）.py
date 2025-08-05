@@ -1,27 +1,17 @@
+'''
+아이디어:
+백트래킹
+'''
 import sys
-# from collections import deque
 
-def make_num_lsts(lst):
-    temp = []
-    for i in num_range:
-        if i > lst[-1]:
-            temp.append(lst+[i])
-    return temp
+def back_tracking(n,start,res):
+    if n==M:
+        print(*res)
+        return
+    for i in range(start,N+1):
+        res.append(i)
+        back_tracking(n+1,i+1,res)
+        res.pop()
 
-n,m = map(int, sys.stdin.readline().split())
-
-num_range = list(range(1,n+1))
-res = []
-for i in num_range:
-    res.append([i])
-
-temp = []
-for rp in range(m-1):
-    for i in res:
-        temp.extend(make_num_lsts(i))
-    res = temp
-    temp = []
-
-for i in res:
-    i = list(map(str,i))
-    print(' '.join(i))
+N,M = map(int, sys.stdin.readline().split())
+back_tracking(0,1,[])
