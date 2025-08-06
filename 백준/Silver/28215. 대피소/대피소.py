@@ -9,32 +9,23 @@ for _ in range(N):
     house_idxs.append(list(map(int, sys.stdin.readline().split())))
 
 def back_tracking(n,start,res):
-    global min_val, real_res
+    global res_min
     if n==K:
-        d_idxs = []
-        h_idxs = []
-        for r in res:
-            d_idxs.append(house_idxs[r])
+        temp_max = -1
         for house_idx in house_idxs:
-            if house_idx not in d_idxs:
-                h_idxs.append(house_idx)
-        max_val = -1
-        for h_idx in h_idxs:
-            temp = float('inf')
-            for d_idx in d_idxs:
-                temp = min(temp,get_dist(d_idx[0],d_idx[1],h_idx[0],h_idx[1]))
-            max_val = max(max_val,temp)
-
-        real_res = min(real_res,max_val)
-
-
+            temp_min = float('inf')
+            for r in res:
+                dist = get_dist(house_idx[0],house_idx[1],house_idxs[r][0],house_idxs[r][1])
+                temp_min = min(temp_min,dist)
+            temp_max = max(temp_max, temp_min)
+        res_min = min(res_min,temp_max)
         return
 
     for i in range(start,N):
-        back_tracking(n+1,i+1,res+[i])
+        res.append(i)
+        back_tracking(n+1,i+1,res)
+        res.pop()
 
-visited = [False]*N
-real_res = float('inf')
+res_min = float('inf')
 back_tracking(0,0,[])
-
-print(real_res)
+print(res_min)
