@@ -1,18 +1,17 @@
+'''
+아이디어: 누적합 배열 이용
+'''
 import sys
 
-n,m = map(int, sys.stdin.readline().split())
+N,M = map(int, sys.stdin.readline().split())
+arr = list(map(int, sys.stdin.readline().split()))
+pre_sum_arr = [0] # 기본 0 넣기
 
-total = list(map(int, sys.stdin.readline().split()))
-
-total_sum = []
-t = 0
-for i in total:
-    t += i
-    total_sum.append(t)
-
-for _ in range(m):
+sm = 0
+for i in range(N):
+    sm += arr[i]
+    pre_sum_arr.append(sm)
+    
+for m in range(M):
     a,b = map(int, sys.stdin.readline().split())
-    if a == 1:
-        print(total_sum[b-1])
-    else:
-        print(total_sum[b-1] - total_sum[a-2])
+    print(pre_sum_arr[b]-pre_sum_arr[a-1]) # a~b
