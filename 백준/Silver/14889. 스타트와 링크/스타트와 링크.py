@@ -14,10 +14,13 @@ for _ in range(N):
 def back_tracking(n,start,team1):
     global min_val
     if n == N//2: # 기저 조건
+        team1 = set(team1)
         team2 = [] # 다른 팀 조합 만들기
         for i in range(N):
             if i not in team1:
                 team2.append(i)
+
+        team1 = list(team1)
         team1_overall = 0
         for i in range(N//2): # i==j는 0이라 괜찮다 -> 조건 추가가 시간 더 들듯
             for j in range(N//2):
@@ -28,7 +31,7 @@ def back_tracking(n,start,team1):
                 team2_overall += arr[team2[i]][team2[j]]
         min_val = min(min_val,abs(team1_overall-team2_overall))
         return
-    
+
     for i in range(start,N):
         team1.append(i)
         back_tracking(n+1,i+1,team1)
