@@ -1,37 +1,45 @@
 '''
 아이디어:
-퀵 소트 구현
+머지 소트 구현
 '''
 import sys
-sys.setrecursionlimit(10**5)
 
-def quick_sort(arr, left, right):
-    if left >= right: # left랑 right가 같아지면 return
+def merge_sort(arr, left, right):
+    if left >= right: # 최대한 쪼개기
         return
 
-    pivot = arr[left]
-    i = left + 1 # pivot 제외
-    j = right
+    center = (left + right) // 2
+    merge_sort(arr, left, center)
+    merge_sort(arr, center + 1, right)
 
-    while i <= j:
-        while i <= right and arr[i] <= pivot:
+    temp = [] # 병합할 배열
+    i = left
+    j = center + 1
+
+    while i <= center and j <= right:
+        if arr[i] <= arr[j]:
+            temp.append(arr[i])
             i += 1
-        while j >= left + 1 and arr[j] >= pivot:
-            j -= 1
-        if i <= j:
-            arr[i], arr[j] = arr[j], arr[i] # 값 바꿔주기
+        else:
+            temp.append(arr[j])
+            j += 1
 
-    arr[left], arr[j] = arr[j], arr[left] # pivot 넣기
+    while i <= center:
+        temp.append(arr[i])
+        i += 1
 
-    # 재귀
-    quick_sort(arr, left, j - 1)
-    quick_sort(arr, j + 1, right)
+    while j <= right:
+        temp.append(arr[j])
+        j += 1
+
+    for k in range(len(temp)): # 병합 배열를 원래 배열에 반영
+        arr[left + k] = temp[k]
 
 N = int(sys.stdin.readline())
 arr = []
 for _ in range(N):
     arr.append(int(sys.stdin.readline()))
-quick_sort(arr, 0, len(arr)-1)
+merge_sort(arr, 0, len(arr)-1)
 
 for a in arr:
     print(a)
