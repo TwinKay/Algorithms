@@ -1,14 +1,19 @@
+'''
+아이디어:
+heap 사용하기
+'''
 import sys
-import heapq
+from heapq import heappush,heappop
 
-heap = []
-for _ in range(int(sys.stdin.readline())):
-    x = int(sys.stdin.readline())
-    if x == 0:
-        if len(heap) == 0:
+N = int(sys.stdin.readline())
+pq = []
+for _ in range(N):
+    query = int(sys.stdin.readline())
+    if query != 0: # 출력하는 경우
+        heappush(pq, query)
+    else:
+        if len(pq) == 0:
             print(0)
         else:
-            print(heapq.heappop(heap))
+            print(heappop(pq))
 
-    else:
-        heapq.heappush(heap, x)
