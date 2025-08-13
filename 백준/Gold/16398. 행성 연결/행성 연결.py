@@ -38,10 +38,14 @@ for i in range(N):
 edges.sort()  # 가중치 낮은 순부터 시도해야해서
 
 res = 0
+node_cnt = 0
 for edge in edges:
     w, a, b = edge
     if find(a) != find(b):  # 같은 그룹이 아니면
         union(a, b)
         res += w
+        node_cnt += 1
+        if node_cnt == N - 1:  # 완성
+            break
 
 print(res)
