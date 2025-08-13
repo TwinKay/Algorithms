@@ -35,7 +35,6 @@ edges = []
 for i in range(N):
     for j in range(i + 1, N):  # 모든 칸을 다 조회할 필요 X
         edges.append((matrix[i][j], j, i))
-        edges.append((matrix[i][j], i, j))  # 양방향
 edges.sort()  # 가중치 낮은 순부터 시도해야해서
 
 res = 0
