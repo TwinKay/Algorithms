@@ -1,35 +1,39 @@
-import heapq as hq
+'''
+아이디어:
+다익스트라를 통한 최단경로 찾기 (pq 사용)
+'''
 import sys
+from heapq import heappush, heappop
 
-v = int(sys.stdin.readline())
-e = int(sys.stdin.readline())
+N = int(sys.stdin.readline())
+M = int(sys.stdin.readline())
 
 graph = []
-for _ in range(v+1):
+for _ in range(N + 1):
     graph.append([])
 
-for _ in range(e):
-    a,b,c = map(int, sys.stdin.readline().split())
-    graph[a].append([b,c])
+for _ in range(M):
+    s, e, w = map(int, input().split())
+    graph[s].append((w, e))
 
-start,end = map(int, sys.stdin.readline().split())
+INF = float('inf')
+dist = [INF] * (N + 1)
+pq = []
 
-dis = [1e9]*(v+1)
+start_node, end_node = map(int, sys.stdin.readline().split())
 
-heap = []
-hq.heappush(heap, [0,start])
-dis[start] = 0
+dist[start_node] = 0  # start_node 시작
+heappush(pq, (0, start_node))  # weight,start_node
+while pq:
+    w, v = heappop(pq)
 
-while heap:
-    dist, point = hq.heappop(heap)
-
-    if dis[point] < dist:
+    if dist[v] < w:  # 이미 최단거리가 더 작으면
         continue
+    for next_node in graph[v]:  # 경유해서 가는 경우들
+        nw, nv = next_node
+        total_w = w + nw  # 가중치 누적
+        if total_w < dist[nv]:  # 갱신할 수 있으면
+            dist[nv] = total_w
+            heappush(pq, (total_w, nv))
 
-    for i in graph[point]:
-        cost = dist + i[1]
-        if cost < dis[i[0]]:
-            dis[i[0]] = cost
-            hq.heappush(heap, [dis[i[0]], i[0]])
-
-print(dis[end])
+print(dist[end_node])
