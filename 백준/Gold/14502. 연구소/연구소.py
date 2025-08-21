@@ -35,11 +35,11 @@ for i in range(N):
             first_visited[i][j] = True # 바이러스는 미리 visited 처리해서 최적화, 나중에 조합마다 딥카피
 
 min_virus = float('inf') # 가장 적은 바이러스 -> 가장 큰 안전여ㅕㅇ역
-for wall_idxs in combinations(empty_idxs,3): # 벽을 세울 수 있는 조합들
+for wall_idxs in combinations(range(len(empty_idxs)),3): # 벽을 세울 수 있는 조합들
     # 벽 세우기
-    graph[wall_idxs[0][1]][wall_idxs[0][0]] = 1
-    graph[wall_idxs[1][1]][wall_idxs[1][0]] = 1
-    graph[wall_idxs[2][1]][wall_idxs[2][0]] = 1
+    graph[empty_idxs[wall_idxs[0]][1]][empty_idxs[wall_idxs[0]][0]] = 1
+    graph[empty_idxs[wall_idxs[1]][1]][empty_idxs[wall_idxs[1]][0]] = 1
+    graph[empty_idxs[wall_idxs[2]][1]][empty_idxs[wall_idxs[2]][0]] = 1
 
     visited = [sub[:] for sub in first_visited] # 기존 바이러스 visited 처리된 visited 딥카피(슬라이싱)
 
@@ -59,8 +59,8 @@ for wall_idxs in combinations(empty_idxs,3): # 벽을 세울 수 있는 조합�
     min_virus = min(min_virus,cnt) # 갱신
 
     # 다음 조합을 위해 벽 빼주기
-    graph[wall_idxs[0][1]][wall_idxs[0][0]] = 0
-    graph[wall_idxs[1][1]][wall_idxs[1][0]] = 0
-    graph[wall_idxs[2][1]][wall_idxs[2][0]] = 0
+    graph[empty_idxs[wall_idxs[0]][1]][empty_idxs[wall_idxs[0]][0]] = 0
+    graph[empty_idxs[wall_idxs[1]][1]][empty_idxs[wall_idxs[1]][0]] = 0
+    graph[empty_idxs[wall_idxs[2]][1]][empty_idxs[wall_idxs[2]][0]] = 0
 
 print(N*M-wall_num-3-min_virus) # 전체 - 기존 벽 갯수 - 새로운 벽 3개 - 최소 바이러스
