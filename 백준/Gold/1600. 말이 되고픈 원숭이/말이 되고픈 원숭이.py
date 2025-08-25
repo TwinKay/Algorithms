@@ -1,8 +1,8 @@
 import sys
 from collections import deque
 
-def is_valid(x,y,jump_cnt):
-    return jump_cnt<=K and 0<=x<M and 0<=y<N
+def is_valid(x,y):
+    return 0<=x<M and 0<=y<N
 
 delta_x = [0,0,-1,1]
 delta_y = [1,-1,0,0]
@@ -16,34 +16,33 @@ for _ in range(N):
     graph.append(list(map(int, sys.stdin.readline().split())))
 
 visited = []
-for i in range(N):
-    visited.append([])
-    for j in range(M):
-        visited[i].append([False]*(K+1))
+for _ in range(N):
+    visited.append([100]*M)
 
 deq = deque()
 deq.append([0,0,0,0])
-visited[0][0][0] = True
+visited[0][0] = 0
+
 res = -1
 while deq:
-    x,y,jump_cnt,time = deq.popleft()
-    if x==M-1 and y==N-1:
+    x,y,time,jump_cnt = deq.popleft()
+    if x == M-1 and y == N-1:
         res = time
         break
 
     for k in range(4):
         dx = x + delta_x[k]
         dy = y + delta_y[k]
+        if is_valid(dx,dy) and graph[dy][dx] == 0 and visited[dy][dx] > jump_cnt:
+            visited[dy][dx] = jump_cnt
+            deq.append([dx,dy,time+1,jump_cnt])
 
-        if is_valid(dx,dy,jump_cnt) and graph[dy][dx] == 0 and not visited[dy][dx][jump_cnt]:
-            deq.append([dx,dy,jump_cnt,time+1])
-            visited[dy][dx][jump_cnt] = True
-
-    for k in range(8):
-        dx = x + delta_jump_x[k]
-        dy = y + delta_jump_y[k]
-        if is_valid(dx,dy,jump_cnt+1) and graph[dy][dx] == 0 and not visited[dy][dx][jump_cnt+1]:
-            deq.append([dx,dy,jump_cnt+1,time+1])
-            visited[dy][dx][jump_cnt+1] = True
+    if jump_cnt < K:
+        for k in range(8):
+            dx = x + delta_jump_x[k]
+            dy = y + delta_jump_y[k]
+            if is_valid(dx,dy) and graph[dy][dx] == 0 and visited[dy][dx] > jump_cnt+1:
+                visited[dy][dx] = jump_cnt+1
+                deq.append([dx,dy,time+1,jump_cnt+1])
 
 print(res)
