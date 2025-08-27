@@ -1,88 +1,83 @@
 import sys
 from collections import deque
 
-n = int(sys.stdin.readline())
+def is_valid(x,y):
+    return 0<=x<N and 0<=y<N
 
+delta_x = [0,0,-1,1]
+delta_y = [1,-1,0,0]
+
+N = int(sys.stdin.readline())
 graph = []
-for i in range(n):
-    fish_list = list(map(int, sys.stdin.readline().split()))
-    if 9 in fish_list:
-        a,b = fish_list.index(9),i
-    graph.append(fish_list)
-graph[b][a] = 0
+for _ in range(N):
+    graph.append(list(map(int, sys.stdin.readline().split())))
 
-baby = 2
-eat = 0
+x,y = N,N
+left_fish = 0
+for i in range(N):
+    for j in range(N):
+        if graph[i][j] == 9:
+            x,y = j,i
+            graph[i][j] = 0
+        elif graph[i][j] in [1,2,3,4,5,6]:
+            left_fish += 1
 
-def bfs(x,y):
-    breaker = False
-    same = []
-    cnt = 0
-
+def bfs(x,y,shark_size):
     visited = []
-    for _ in range(n):
-        visited.append([False]*n)
+    for _ in range(N):
+        visited.append([0]*N)
 
-    deq = deque([])
-    deq.append([x,y,cnt])
-    visited[y][x] = True
-
+    min_dist = 10000
+    eat_x,eat_y = N,N
+    deq = deque()
+    deq.append([x,y,0])
+    visited[y][x] = 1
     while deq:
-        x,y,cnt = deq.popleft()
+        x,y,dist = deq.popleft()
+        if dist > min_dist: break # 계속해도 우선순위 X
 
-        if y-1 != -1:
-            if visited[y-1][x] == False and (graph[y-1][x] == 0 or graph[y-1][x] == baby):
-                if breaker == False:
-                    deq.append([x, y-1, cnt+1])
-                    visited[y-1][x] = True
-            elif visited[y-1][x] == False and 1 <= graph[y-1][x] < baby:
-                breaker = True
-                same.append([x, y-1, cnt+1])
+        if 0 < graph[y][x] < shark_size: # 먹이
+            if dist < min_dist:
+                eat_x,eat_y = x,y
+                min_dist = dist
 
-        if x-1 != -1:
-            if visited[y][x-1] == False and (graph[y][x-1] == 0 or graph[y][x-1] == baby):
-                if breaker == False:
-                    deq.append([x-1, y, cnt+1])
-                    visited[y][x-1] = True
-            elif visited[y][x-1] == False and 1 <= graph[y][x-1] < baby:
-                breaker = True
-                same.append([x-1, y, cnt+1])
+            elif dist == min_dist:
+                if eat_y > y:
+                    eat_x,eat_y = x,y
+                elif eat_y == y:
+                    if eat_x > x:
+                        eat_x,eat_y = x,y #y도 그냥
+            else:
+                break
 
-        if x+1 != n:
-            if visited[y][x+1] == False and (graph[y][x+1] == 0 or graph[y][x+1] == baby):
-                if breaker == False:
-                    deq.append([x+1, y, cnt+1])
-                    visited[y][x+1] = True
-            elif visited[y][x+1] == False and 1 <= graph[y][x+1] < baby:
-                breaker = True
-                same.append([x+1, y, cnt+1])
+        for k in range(4):
+            dx = x + delta_x[k]
+            dy = y + delta_y[k]
+            if not is_valid(dx,dy):
+                continue
+            if visited[dy][dx]:
+                continue
+            if graph[dy][dx] > shark_size:
+                continue
+            else:
+                deq.append([dx,dy,dist+1])
+                visited[dy][dx] = 1
 
-        if y+1 != n:
-            if visited[y+1][x] == False and (graph[y+1][x]==0 or graph[y+1][x] == baby):
-                if breaker == False:
-                    deq.append([x,y+1,cnt+1])
-                    visited[y+1][x] = True
-            elif visited[y+1][x] == False and 1 <= graph[y+1][x] < baby:
-                breaker = True
-                same.append([x, y+1, cnt+1])
+    return eat_x,eat_y,min_dist
 
-    if len(same) == 1:
-        graph[same[0][1]][same[0][0]] = 0
-        return same[0]
-    elif len(same) >= 2:
-        same.sort(key=lambda x: (x[2], x[1], x[0]))
-        graph[same[0][1]][same[0][0]] = 0
-        return same[0]
-
-result = 0
-while True:
-    try:
-        a,b,cnt = bfs(a,b)
-        eat += 1
-        if eat == baby:
-            baby += 1
-            eat = 0
-        result += cnt
-    except:
-        break
-print(result)
+shark_size = 2
+cnt_eat = 0
+time = 0
+while left_fish > 0:
+    eat_x,eat_y,dist = bfs(x,y,shark_size)
+    if eat_x == N: break
+    graph[eat_y][eat_x] = 0
+    x,y = eat_x,eat_y
+    time += dist
+    left_fish -= 1
+    cnt_eat += 1
+    if cnt_eat == shark_size:
+        shark_size += 1
+        cnt_eat = 0
+        
+print(time)
