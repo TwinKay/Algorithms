@@ -1,176 +1,77 @@
-# 보기 쉽게 다시 수정할 것!
-
 import sys
 
-n = int(sys.stdin.readline())
+def is_valid(x,y):
+    return 0<=x<N and 0<=y<N
 
-def get_index(result, d):
-    for id1, x in enumerate(result):
-        for id2, y in enumerate(x):
-            if y == d:
-                return id1, id2
-    return None
+delta_x = [0,0,-1,1]
+delta_y = [1,-1,0,0]
 
-stu_num = []
-total = dict()
-for i in range(n**2):
-    l = list(map(int, sys.stdin.readline().split()))
-    stu_num.append(l[0])
+N = int(sys.stdin.readline())
+graph = []
+for _ in range(N):
+    graph.append([0]*N)
 
-    total[l[0]] = l[1:]
+favorite_dic = {}
+order_student = []
 
-result = []
-for _ in range(n):
-    result.append([False]*n)
+for _ in range(N*N):
+    num, a,b,c,d = map(int, sys.stdin.readline().split())
+    favorite_dic[num] = {a, b, c, d}
+    order_student.append(num)
 
-bin = []
-for i in stu_num:
-    love_num = []
-    for _ in range(n):
-        love_num.append([0]*n)
+for student_id in order_student:
 
-    for j in total[i]:
-        if j in bin:
-            ind = get_index(result, j)
-            if ind != None:
-                try:
-                    love_num[ind[0]+1][ind[1]] += 1
-                except IndexError:
-                    pass
-                try:
-                    if ind[0] == 0:
-                        pass
-                    else:
-                        love_num[ind[0]-1][ind[1]] += 1
-                except IndexError:
-                    pass
-                try:
-                    love_num[ind[0]][ind[1]+1] += 1
-                except IndexError:
-                    pass
-                try:
-                    if ind[1] == 0:
-                        pass
-                    else:
-                        love_num[ind[0]][ind[1]-1] += 1
-                except IndexError:
-                    pass
-    for e,q in enumerate(result):
-        for r,w in enumerate(q):
-            if w != False:
-                love_num[e][r] = -1
+    max_favorite_cnt = -1
+    max_blank_cnt = -1
+    best_x,best_y = N,N
+    for i in range(N): # 행 우선 -> 같을 떄 갱신 X
+        for j in range(N):
+            if graph[i][j] != 0: continue
 
+            favorite_cnt = 0
+            blank_cnt = 0
+            favorite_set = favorite_dic[student_id]
+            for k in range(4):
+                dx = j + delta_x[k]
+                dy = i + delta_y[k]
+                if not is_valid(dx,dy):
+                    continue
 
-    love_num_list = []
-    for a in love_num:
-        for b in a:
-            love_num_list.append(b)
-    m = max(love_num_list)
-    if love_num_list.count(m) == 1:
-        ind_2 = get_index(love_num, m)
-        if result[ind_2[0]][ind_2[1]] == False:
+                if graph[dy][dx] == 0:
+                    blank_cnt += 1
+                elif graph[dy][dx] in favorite_set:
+                    favorite_cnt += 1
 
-            result[ind_2[0]][ind_2[1]] = i
-            bin.append(i)
+            if favorite_cnt > max_favorite_cnt:
+                max_favorite_cnt = favorite_cnt
+                max_blank_cnt = blank_cnt
+                best_x, best_y = j,i
+            elif favorite_cnt == max_favorite_cnt:
+                if max_blank_cnt < blank_cnt:
+                    max_blank_cnt = blank_cnt
+                    best_x, best_y = j, i
 
-    else:
-        try_list = []
-        for x,c in enumerate(love_num):
-            for y,d in enumerate(c):
-                if d == m:
-                    try_list.append((x,y))
+    graph[best_y][best_x] = student_id
 
-        blank = [-1] * (n ** 2)
-        for q in try_list:
-            x = q[0] ; y = q[1]
+res = 0
+for i in range(N):
+    for j in range(N):
+        cnt = 0
+        favorite_set = favorite_dic[graph[i][j]]
+        for k in range(4):
+            dx = j + delta_x[k]
+            dy = i + delta_y[k]
+            if is_valid(dx,dy):
+                if graph[dy][dx] in favorite_set:
+                    cnt += 1
 
-            t = 0
-            try:
-                if result[x+1][y] == False:
-                    t += 1
-            except IndexError:
-                pass
-            try:
-                if x == 0:
-                    pass
-                elif result[x-1][y] == False:
-                    t += 1
-            except IndexError:
-                pass
-            try:
-                if result[x][y+1] == False:
-                    t += 1
-            except IndexError:
-                pass
-            try:
-                if y == 0:
-                    pass
-                elif result[x][y-1] == False:
-                    t += 1
-            except IndexError:
-                pass
+        if cnt == 1:
+            res += 1
+        elif cnt == 2:
+            res += 10
+        elif cnt == 3:
+            res += 100
+        elif cnt == 4:
+            res += 1000
 
-            blank[x*n+y] = t
-
-        m = max(blank)
-        if blank.count(m) == 1:
-            a = blank.index(m)
-            ind1 = a//n ; ind2 = a%n
-
-            if result[ind1][ind2] == False:
-                result[ind1][ind2] = i
-                bin.append(i)
-
-        else:
-            try_list = []
-            for w, q in enumerate(blank):
-                if q == m:
-                    if result[w//n][w%n] == False:
-                        result[w // n][w % n] = i
-                        break
-
-            bin.append(i)
-
-sat = 0
-for x,i in enumerate(result):
-    for y,j in enumerate(i):
-        t = 0
-        try:
-            if result[x+1][y] in total[j]:
-                t += 1
-        except:
-            pass
-        try:
-            if x == 0:
-                pass
-            else:
-                if result[x-1][y] in total[j]:
-                    t += 1
-        except:
-            pass
-        try:
-            if result[x][y+1] in total[j]:
-                t += 1
-        except:
-            pass
-        try:
-            if y == 0:
-                pass
-            else:
-                if result[x][y-1] in total[j]:
-                    t += 1
-        except:
-            pass
-
-        if t == 0:
-            sat += 0
-        elif t == 1:
-            sat += 1
-        elif t == 2:
-            sat += 10
-        elif t == 3:
-            sat += 100
-        else:
-            sat += 1000
-
-print(sat)
+print(res)
