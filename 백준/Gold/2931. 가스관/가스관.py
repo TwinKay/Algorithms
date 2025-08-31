@@ -1,22 +1,56 @@
 import sys
 
-delta_x = [0,1,0,-1]
-delta_y = [-1,0,1,0]
+def is_valid(x,y):
+    return 0<=x<M and 0<=y<N
 
-# pipe_switch = {}
-# pipe_switch['1'] = '|'
-# pipe_switch['2'] = '-'
-# pipe_switch['3'] = '+'
-# pipe_switch['4'] = '4'
-# pipe_switch['5'] = '5'
-# pipe_switch['6'] = '6'
-# pipe_switch['7'] = '7'
-# pipe_switch['|'] = '1'
-# pipe_switch['-'] = '2'
-# pipe_switch['+'] = '3'
+def get_first_direction(x,y):
+    for k in range(4):
+        dx = x + delta_x[k]
+        dy = y + delta_y[k]
+        if not is_valid(dx,dy):
+            continue
+        if graph[dy][dx] != '.': # 파이프가 없고
+            pipe_num = graph[dy][dx]
+            if k in pipe_info[pipe_num].keys(): # 파이프로 들어갈 수 있는 방향이면
+                return k
+
+
+def get_can_move_info(x, y, direct):
+    while True:
+        dx = x + delta_x[direct]
+        dy = y + delta_y[direct]
+        if graph[dy][dx] == '.':
+            return x, y, direct
+
+        next_pipe_num = graph[dy][dx]
+
+        next_direct = pipe_info[next_pipe_num][direct]
+        x, y, direct = dx, dy, next_direct
+        visited[dy][dx] = 1
+
+
+pipe_to_num = {
+    '|':'1',
+    '-':'2',
+    '+':'3',
+    '1':'4',
+    '2':'5',
+    '3':'6',
+    '4':'7'
+}
+num_to_pipe = {
+    '1':'|',
+    '2':'-',
+    '3':'+',
+    '4':'1',
+    '5':'2',
+    '6':'3',
+    '7':'4'
+}
 
 pipe_info = {}
-# pipe 번호 - key:can enter direct value: [next direct]
+# pipe 번호 - key:can_enter_direct
+#            value: [next direct]
 pipe_info['1'] = {
     0:0,
     2:2
@@ -48,21 +82,8 @@ pipe_info['7'] = {
     0:3
 }
 
-def is_valid(x,y):
-    return 0<=x<M and 0<=y<N
-
-def get_first_direction(x,y):
-    for k in range(4):
-        dx = x + delta_x[k]
-        dy = y + delta_y[k]
-        if not is_valid(dx,dy):
-            continue
-        if graph[dy][dx] != '.':
-            pipe_num = graph[dy][dx]
-            if k in pipe_info[pipe_num].keys():
-                return k
-
-
+delta_x = [0,1,0,-1]
+delta_y = [-1,0,1,0]
 
 N,M = map(int, sys.stdin.readline().split())
 
@@ -73,131 +94,52 @@ for _ in range(N):
 x1,y1,x2,y2 = N,N,N,N
 for i in range(N):
     for j in range(M):
-        if graph[i][j] == 'M':
+        if graph[i][j] == '.':
+            continue
+        elif graph[i][j] == 'M':
             x1,y1 = j,i
             graph[i][j] = '.'
         elif graph[i][j] == 'Z':
             x2,y2 = j,i
             graph[i][j] = '.'
-        elif graph[i][j] == '|':
-            graph[i][j] = '1'
-        elif graph[i][j] == '-':
-            graph[i][j] = '2'
-        elif graph[i][j] == '+':
-            graph[i][j] = '3'
-        elif graph[i][j] == '1':
-            graph[i][j] = '4'
-        elif graph[i][j] == '2':
-            graph[i][j] = '5'
-        elif graph[i][j] == '3':
-            graph[i][j] = '6'
-        elif graph[i][j] == '4':
-            graph[i][j] = '7'
-
+        else:
+            graph[i][j] = pipe_to_num[graph[i][j]]
 
 direct1 = get_first_direction(x1,y1)
 direct2 = get_first_direction(x2,y2)
 
 visited = []
 for i in range(N):
-    visited.append([])
-    for _ in range(M):
-        visited[i].append([0]*2)
-visited[y1][x1][0] = 1
-visited[y2][x2][0] = 1
-
-def get_can_move_info(x,y,direct):
-    while True:
-        dx = x + delta_x[direct]
-        dy = y + delta_y[direct]
-        if graph[dy][dx] == '.':
-            return x,y,direct
-
-        next_pipe_num = graph[dy][dx]
-        # if direct not in pipe_info[next_pipe_num].keys():
-        #     continue
-
-        next_direct = pipe_info[next_pipe_num][direct]
-        x,y,direct = dx,dy,next_direct
-        if next_pipe_num == '3':
-            if direct%2 == 0:
-                visited[dy][dx][1] = 1
-            else:
-                visited[dy][dx][0] = 1
-        else:
-            visited[dy][dx][0] = 1
-
-
+    visited.append([0]*M)
+    
 x1,y1,direct1 = get_can_move_info(x1,y1,direct1)
 x2,y2,direct2 = get_can_move_info(x2,y2,direct2)
-
 
 is_plus = False
 for i in range(N):
     if is_plus:
         break
     for j in range(M):
-        if graph[i][j] != '.' and not visited[i][j][0]:
+        if graph[i][j] != '.' and not visited[i][j]: # 파이프인데 간 곳이 없는 경우
             is_plus = True
             break
 
-if x2-x1 == 0 and y2-y1 == 2:
-    if is_plus:
-        print(y2,x2+1,'+')
-    else:
-        print(y2,x2+1,'|')
-elif x1-x2 == 2 and y1-y2 == 0:
-    if is_plus:
-        print(y1+1,x1,'+')
-    else:
-        print(y1+1,x1,'-')
-elif x1-x2 == 0 and y1-y2 == 2:
-    if is_plus:
-        print(y1,x1+1,'+')
-    else:
-        print(y1,x1+1,'|')
-elif x2-x1 == 2 and y2-y1 == 0:
-    if is_plus:
-        print(y2+1,x2,'+')
-    else:
-        print(y2+1,x2,'-')
-elif x2-x1 == 1 and y2-y1 == 1 and direct2==0:
-    if is_plus:
-        print(y2+1,x2,'+')
-    else:
-        print(y2+1,x2,4)
-elif x2-x1 == 1 and y2-y1 == 1 and direct2==3:
-    if is_plus:
-        print(y2+1,x1+1,'+')
-    else:
-        print(y2+1,x1+1,2)
-elif x1-x2 == 1 and y2-y1 == 1 and direct2==0:
-    if is_plus:
-        print(y1+1,x2+1,'+')
-    else:
-        print(y1+1,x2+1,1)
-elif x1-x2 == 1 and y2-y1 == 1 and direct2==1:
-    if is_plus:
-        print(y2+1,x1+1,'+')
-    else:
-        print(y2+1,x1+1,3)
-elif x2-x1 == -1 and y1-y2 == 1 and direct2==2:
-    if is_plus:
-        print(y1+1,x2+1,'+')
-    else:
-        print(y1+1,x2+1,2)
-elif x2 - x1 == -1 and y1 - y2 == 1 and direct2 == 1:
-    if is_plus:
-        print(y2+1,x1+1,'+')
-    else:
-        print(y2+1,x1+1, 4)
-elif x2 - x1 == 1 and y1 - y2 == 1 and direct2 == 3:
-    if is_plus:
-        print(y2+1,x1+1,'+')
-    else:
-        print(y2+1,x1+1, 1)
-elif x2 - x1 == 1 and y1 - y2 == 1 and direct2 == 2:
-    if is_plus:
-        print(y1+1,x2+1,'+')
-    else:
-        print(y1+1,x2+1, 3)
+res_x,res_y,res_pipe = M,N,10
+if is_plus:
+    res_x = x1+delta_x[direct1]
+    res_y = y1+delta_y[direct1]
+    res_pipe = '3'
+else:
+    for pipe_num in ['1','2','4','5','6','7']:
+        for enter_direct in pipe_info[pipe_num].keys():
+            if enter_direct != direct1:
+                continue
+            exit_direct = pipe_info[pipe_num][enter_direct]
+            mid_x = x1+delta_x[enter_direct]
+            mid_y = y1+delta_y[enter_direct]
+            cand_x = mid_x+delta_x[exit_direct]
+            cand_y = mid_y+delta_y[exit_direct]
+            if cand_x == x2 and cand_y==y2:
+                res_x,res_y,res_pipe = mid_x,mid_y,pipe_num
+
+print(res_y+1,res_x+1,num_to_pipe[res_pipe])
