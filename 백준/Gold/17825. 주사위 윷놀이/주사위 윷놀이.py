@@ -43,6 +43,9 @@ def back_track(n,def_horse_idxs,def_horses_special,score):
         res_max = max(res_max,score)
         return
 
+    if (10-n)*40 + score <= res_max: # 가지 치기 강사님 코드 참고
+        return
+
     for horse_id in range(4):
         is_cant_id = False
         horse_idxs = def_horse_idxs[:]
