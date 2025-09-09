@@ -1,38 +1,32 @@
-# x,y 축 각 한 방향 포지션 변경, 및 시계 방향 돌리기 3개의 함수만으로 구현하기
+# 오른쪽이 윗면 전개도로 바뀌는 함수 1, 왼쪽이 윗면 전개도로 바뀌는 함수 2, 윗면을 시계 방향으로 돌리는 함수 3
+# 총 3개의 함수 반복을 통한 구현 -> 시간 복잡도 충분
 import sys
 
-# debug_cube = [
-#     ['.', '.', '.', 1, 2, 3, '.', '.', '.', '.', '.', '.'],
-#     ['.', '.', '.', 4, 5, 6, '.', '.', '.', '.', '.', '.'],
-#     ['.', '.', '.', 7, 8, 9, '.', '.', '.', '.', '.', '.'],
-#     [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
-#     [22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33],
-#     [34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45],
-#     ['.', '.', '.', 46, 47, 48, '.', '.', '.', '.', '.', '.'],
-#     ['.', '.', '.', 49, 50, 51, '.', '.', '.', '.', '.', '.'],
-#     ['.', '.', '.', 52, 53, 54, '.', '.', '.', '.', '.', '.'],
-#
-# ]
+query_dic = {}
+for i, q in enumerate("URDLFB"):
+    query_dic[q] = i
 
-def fill_each(graph,x,y,color):
+
+def fill_each(graph, x, y, color):  # fill cube를 통해 각각 색칠하는 함수
     for i in range(3):
         for j in range(3):
-            graph[y+i][x+j] = color
-
-    return graph
-
-def fill_cube(graph):
-    graph = fill_each(graph,3,0,'o')
-    graph = fill_each(graph,0,3,'g')
-    graph = fill_each(graph,3,3,'w')
-    graph = fill_each(graph,6,3,'b')
-    graph = fill_each(graph,9,3,'y')
-    graph = fill_each(graph,3,6,'r')
+            graph[y + i][x + j] = color
 
     return graph
 
 
-def change_position_x(graph):
+def fill_cube(graph):  # 큐브 색칠하는 함수
+    graph = fill_each(graph, 3, 0, 'o')
+    graph = fill_each(graph, 0, 3, 'g')
+    graph = fill_each(graph, 3, 3, 'w')
+    graph = fill_each(graph, 6, 3, 'b')
+    graph = fill_each(graph, 9, 3, 'y')
+    graph = fill_each(graph, 3, 6, 'r')
+
+    return graph
+
+
+def change_position_x(graph):  # 오른쪽면을 윗면 전개도로 바뀌는 함수
     temp = []
     for _ in range(3):
         temp.append(['.'] * 3)
@@ -68,7 +62,7 @@ def change_position_x(graph):
     return graph
 
 
-def change_position_y(graph):
+def change_position_y(graph):  # 앞면을 윗면 전개도로 바뀌는 함수
     temp = []
     for _ in range(3):
         temp.append(['.'] * 3)
@@ -107,8 +101,33 @@ def change_position_y(graph):
 
     return graph
 
+def change_position(query,graph): # 특정 면을 윗면으로 바꾸는 것은 곧 change x y 함수를 k번 반복
+    query = query_dic[query]
+    rotate_cnt_arr = [0,1,2,3,1,3] # 각 반복 횟수
+    if query <= 3: # x 기준 전개도 돌리기
+        for _ in range(rotate_cnt_arr[query]):
+            graph = change_position_x(graph)
+    else: # y 기준 전개도 돌리기
+        for _ in range(rotate_cnt_arr[query]):
+            graph = change_position_y(graph)
 
-def rotate_right(c):
+    return graph
+
+
+def roll_back_position(query,graph): # 원래 윗면을 윗면으로 원복
+    query = query_dic[query]
+    rotate_cnt_arr = [0,3,2,1,3,1] # change_position과 합쳐서 4번이어야 함(원래 윗면은 안 돌려줌)
+    if query <= 3: # x 기준 전개도 돌리기
+        for _ in range(rotate_cnt_arr[query]):
+            graph = change_position_x(graph)
+    else: # y 기준 전개도 돌리기
+        for _ in range(rotate_cnt_arr[query]):
+            graph = change_position_y(graph)
+
+    return graph
+
+
+def rotate_right(c):  # 윗면을 시계방향으로 회전하는 함수
     c[2][3], c[2][4], c[2][5], c[3][6], c[4][6], c[5][6], c[6][5], c[6][4], c[6][3], c[5][2], c[4][2], c[3][2], \
         c[3][3], c[3][4], c[3][5], c[4][5], c[5][5], c[5][4], c[5][3], c[4][3] \
         = \
@@ -118,86 +137,34 @@ def rotate_right(c):
     return c
 
 
-N = 9; M = 12
+def rotate_left(c):  # 반시계 방향은 곧 rotate_right 3번 반복
+    for _ in range(3):
+        c = rotate_right(c)
 
+    return c
+
+
+N = 9; M = 12
 TC = int(sys.stdin.readline())
 for tc in range(TC):
     cube = []
     for _ in range(N):
-        cube.append(['.']*M)
+        cube.append(['.'] * M)  # 큐브 뼈대
+    cube = fill_cube(cube)  # 큐브 색칠하기
 
-    cube = fill_cube(cube)
-
-    query_num = int(sys.stdin.readline())
+    _ = sys.stdin.readline()
     queries = list(sys.stdin.readline().split())
     for query in queries:
-        if query[0] == 'U':
-            if query[1] == '+':
-                cube = rotate_right(cube)
-            else:
-                for _ in range(3):
-                    cube = rotate_right(cube)
+        cube = change_position(query[0], cube) # 특정 면이 윗면으로
 
-        elif query[0] == 'R':
-            cube = change_position_x(cube)
-
-            if query[1] == '+':
-                cube = rotate_right(cube)
-            else:
-                for _ in range(3):
-                    cube = rotate_right(cube)
-
-            for _ in range(3):
-                cube = change_position_x(cube)
-
-        elif query[0] == 'D':
-            for _ in range(2):
-                cube = change_position_x(cube)
-
-            if query[1] == '+':
-                cube = rotate_right(cube)
-            else:
-                for _ in range(3):
-                    cube = rotate_right(cube)
-
-            for _ in range(2):
-                cube = change_position_x(cube)
-
-        elif query[0] == 'L':
-            for _ in range(3):
-                cube = change_position_x(cube)
-
-            if query[1] == '+':
-                cube = rotate_right(cube)
-            else:
-                for _ in range(3):
-                    cube = rotate_right(cube)
-
-            cube = change_position_x(cube)
-
-        elif query[0] == 'F':
-            cube = change_position_y(cube)
-
-            if query[1] == '+':
-                cube = rotate_right(cube)
-            else:
-                for _ in range(3):
-                    cube = rotate_right(cube)
-
-            for _ in range(3):
-                cube = change_position_y(cube)
-
+        if query[1] == '+':
+            cube = rotate_right(cube)
         else:
-            for _ in range(3):
-                cube = change_position_y(cube)
+            cube = rotate_left(cube) # rotate_right 3번 반복
 
-            if query[1] == '+':
-                cube = rotate_right(cube)
-            else:
-                for _ in range(3):
-                    cube = rotate_right(cube)
+        cube = roll_back_position(query[0], cube) # 윗면 원복
 
-            cube = change_position_y(cube)
 
+    # 윗면만 출력
     for c in cube[3:6]:
         print("".join(c[3:6]))
