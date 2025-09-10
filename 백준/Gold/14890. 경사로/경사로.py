@@ -1,6 +1,5 @@
-# 혼자 백트래킹으로 풀고 난리 부르스 -> bfs처럼 변경
+# 혼자 백트래킹으로 풀고 난리 부르스 -> 변경
 import sys
-from collections import deque
 
 def get_cand_lsts(graph):
     cand = []
