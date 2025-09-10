@@ -1,84 +1,49 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.util.StringTokenizer;
+# 혼자 백트래킹으로 풀고 난리 부르스 -> 변경
+def get_cand_lsts(graph):
+    cand = []
+    for g in graph:
+        cand.append(g)
+    for i in range(N):
+        temp = []
+        for j in range(N):
+            temp.append(graph[j][i])
+        cand.append(temp)
+    return cand
 
-public class Solution {
-    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    static StringBuilder sb = new StringBuilder();
-    static StringTokenizer token;
+def can_go(line):
+    visited = [0] * N
+    for i in range(N - 1):
+        if line[i] == line[i + 1]:
+            continue
 
-    static int N, X, T;
-    static int[][] graph;
-    static int res;
+        diff = line[i + 1] - line[i]
+        if abs(diff) > 1:
+            return False
+        elif diff == 1:
+            for k in range(i, i - X, -1):
+                if k < 0 or line[k] != line[i] or visited[k]:
+                    return False
+            for k in range(i, i - X, -1):
+                visited[k] = 1
+        else:
+            for k in range(i + 1, i + 1 + X):
+                if k >= N or line[k] != line[i + 1] or visited[k]:
+                    return False
+            for k in range(i + 1, i + 1 + X):
+                visited[k] = 1
+    return True
 
-    public static void main(String[] args) throws IOException {
-        T = Integer.parseInt(br.readLine());
-        for (int t = 1; t <= T; t++) {
-            token = new StringTokenizer(br.readLine());
-            N = Integer.parseInt(token.nextToken());
-            X = Integer.parseInt(token.nextToken());
-            graph = new int[N][N];
-
-            for (int i = 0; i < N; i++) {
-                token = new StringTokenizer(br.readLine());
-                for (int j = 0; j < N; j++) {
-                    graph[i][j] = Integer.parseInt(token.nextToken());
-                }
-            }
-            res = 0;
-            for (int i = 0; i < N; i++) {
-                if (isValid(graph[i])) {
-                    res++;
-                }
-            }
-
-            for (int i = 0; i < N; i++) {
-                int[] col = new int[N];
-                for (int j = 0; j < N; j++) {
-                    col[j] = graph[j][i];
-                }
-                if (isValid(col)) {
-                    res++;
-                }
-            }
-            sb.append("#").append(t).append(" ").append(res).append("\n");
-        }
-        System.out.println(sb);
-    }
-
-    static boolean isValid(int[] road){
-        boolean[] build = new boolean[N];
-
-        for(int i = 0; i < N-1; i++){
-            if(road[i] == road[i+1]) {
-                continue;
-            }
-
-            else if (road[i]+1 == road[i+1]){
-                for(int j = 0; j < X; j++){
-                    int idx = i-j;
-                    if(idx < 0 || road[idx] != road[i] || build[idx]){
-                        return false;
-                    }
-                    build[idx] = true;
-                }
-            }
-
-            else if(road[i] - 1 == road[i+1]){
-                for(int j = 1; j <= X; j++){
-                    int idx = i+j;
-                    if(idx >= N || road[idx] != road[i+1] || build[idx]){
-                        return false;
-                    }
-                    build[idx] = true;
-                }
-                i += X-1;
-            }
-            else{
-                return false;
-            }
-        }
-        return true;
-    }
-}
+TC = int(input())
+for tc in range(1,TC+1):
+    N,X = map(int, input().split())
+    graph = []
+    for _ in range(N):
+        graph.append(list(map(int, input().split())))
+    
+    cand_lsts = get_cand_lsts(graph)
+    
+    res = 0
+    for lst in cand_lsts:
+        if can_go(lst):
+            res += 1
+    print(f'#{tc} {res}')
