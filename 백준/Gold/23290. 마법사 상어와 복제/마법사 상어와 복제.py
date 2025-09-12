@@ -1,104 +1,99 @@
-# BFS로 상어를 움직이면 사전 순은 보장은 되겠지만 복제되어 본인과 동일한
-# 위치에 있는 물고기를 잡아먹지 못한다.
-#   => 그냥 완탐으로 보자
+'''
+MAX INPUT으로도 잘 돌아가는 코드
+    -> 물론 "격자 위에 있는 물고기의 수가 항상 1,000,000 이하인 입력만 주어진다."
+       라서 턴당 최대 1,000,000마리만 이동하지만 해당 조건이 없을 경우도 생각해보자
+
+[엣지케이스]
+10 100
+1 1 1
+1 1 2
+1 1 3
+1 1 4
+1 1 5
+1 1 6
+1 1 7
+1 1 8
+2 1 1
+2 1 1
+2 1
+
+답: 1172979502354464511868
+=> 선정이유: 물론 "격자 위에 있는 물고기의 수가 항상 1,000,000 이하인 입력만 주어진다."
+       라서 턴당 최대 1,000,000마리만 이동하지만 해당 조건이 없을 경우도 생각해보자
+'''
 import sys
 from itertools import product
 
-def is_valid(x,y):
-    return 0<=x<N and 0<=y<N
+def is_valid(x, y):
+    return 0 <= x < N and 0 <= y < N
 
-
-def move_each_fish(x,y,direct):
+def move_each_fish(x, y, direct):
     for k in range(8):
-        dx = x + delta8_x[(direct-k)%8]
-        dy = y + delta8_y[(direct-k)%8]
+        dx = x + delta8_x[(direct - k) % 8]
+        dy = y + delta8_y[(direct - k) % 8]
 
-        if not is_valid(dx,dy):
+        if not is_valid(dx, dy):
             continue
         if dx == shark_x and dy == shark_y:
             continue
-        if smell_graph[dy][dx] >= time: # 잘 확인해
+        if smell_graph[dy][dx] >= time:
             continue
-        return dx,dy,(direct-k)%8
-    return x,y,direct
-
+        return dx, dy, (direct - k) % 8
+    return x, y, direct
 
 def move_fish(arr):
-    next_arr = []
-    for i in range(N):
-        next_arr.append([])
-        for _ in range(N):
-            next_arr[i].append([])
-
+    next_arr = [[[0]*8 for _ in range(N)] for _ in range(N)]
     for i in range(N):
         for j in range(N):
-            if arr[i][j]:
-                for fish in arr[i][j]:
-                    dx,dy,direct = move_each_fish(j,i,fish)
-                    next_arr[dy][dx].append(direct)
-
+            for d in range(8):
+                cnt = arr[i][j][d]
+                if cnt > 0:
+                    dx, dy, direct = move_each_fish(j, i, d)
+                    next_arr[dy][dx][direct] += cnt
     return next_arr
 
+def move_shark_each_direction(arr, x, y, directs):
+    dx1, dy1 = x + delta4_x[directs[0]], y + delta4_y[directs[0]]
+    dx2, dy2 = dx1 + delta4_x[directs[1]], dy1 + delta4_y[directs[1]]
+    dx3, dy3 = dx2 + delta4_x[directs[2]], dy2 + delta4_y[directs[2]]
 
-def move_shark_each_direction(arr,x,y,directs):
-    dx_1 = x + delta4_x[directs[0]]
-    dy_1 = y + delta4_y[directs[0]]
-    dx_2 = dx_1 + delta4_x[directs[1]]
-    dy_2 = dy_1 + delta4_y[directs[1]]
-    dx_3 = dx_2 + delta4_x[directs[2]]
-    dy_3 = dy_2 + delta4_y[directs[2]]
+    if not (is_valid(dx1, dy1) and is_valid(dx2, dy2) and is_valid(dx3, dy3)):
+        return None, None
 
-    if not is_valid(dx_1,dy_1) or not is_valid(dx_2,dy_2) or not is_valid(dx_3,dy_3):
-        return None,None
-
-    directs_set = set()
-    directs_set.add((dx_1,dy_1))
-    directs_set.add((dx_2,dy_2))
-    directs_set.add((dx_3,dy_3))
-
+    visited = set([(dx1, dy1), (dx2, dy2), (dx3, dy3)]) # 같은 곳 또 방문 가능하니깐
     cnt_fish = 0
-    for dx,dy in directs_set:
-        cnt_fish += len(arr[dy][dx])
+    for dx, dy in visited:
+        cnt_fish += sum(arr[dy][dx])
+    return cnt_fish, [(dx1, dy1), (dx2, dy2), (dx3, dy3)]
 
-    return cnt_fish,[(dx_1,dy_1),(dx_2,dy_2),(dx_3,dy_3)]
+def move_shark(arr, x, y):
+    global shark_x, shark_y
+    best_path, max_fish = None, -1
 
-
-def move_shark(arr,x,y):
-    global shark_x,shark_y
-
-    direct_to_max_fish = None
-    max_fish_val = -1
     for pro in product(range(4), repeat=3):
-        cnt_fish,move_idxs = move_shark_each_direction(arr,x,y,pro)
-        if cnt_fish == None:
+        cnt_fish, path = move_shark_each_direction(arr, x, y, pro)
+        if cnt_fish is None:
             continue
-        if max_fish_val >= cnt_fish:
-            continue
-        max_fish_val = cnt_fish
-        direct_to_max_fish = move_idxs
+        if cnt_fish > max_fish:
+            max_fish = cnt_fish
+            best_path = path
 
-    if arr[direct_to_max_fish[0][1]][direct_to_max_fish[0][0]]:
-        smell_graph[direct_to_max_fish[0][1]][direct_to_max_fish[0][0]] = time + 2
-        arr[direct_to_max_fish[0][1]][direct_to_max_fish[0][0]] = []
-    if arr[direct_to_max_fish[1][1]][direct_to_max_fish[1][0]]:
-        smell_graph[direct_to_max_fish[1][1]][direct_to_max_fish[1][0]] = time + 2
-        arr[direct_to_max_fish[1][1]][direct_to_max_fish[1][0]] = []
-    if arr[direct_to_max_fish[2][1]][direct_to_max_fish[2][0]]:
-        smell_graph[direct_to_max_fish[2][1]][direct_to_max_fish[2][0]] = time + 2
-        arr[direct_to_max_fish[2][1]][direct_to_max_fish[2][0]] = []
+    for (dx, dy) in best_path:
+        if sum(arr[dy][dx]) > 0:
+            smell_graph[dy][dx] = time + 2 # 2초동안
+            arr[dy][dx] = [0]*8 # 초기화
 
-    shark_x, shark_y = direct_to_max_fish[2][0],direct_to_max_fish[2][1]
+    shark_x, shark_y = best_path[-1]
+    return arr, shark_x, shark_y
 
-    return arr,direct_to_max_fish[2][0],direct_to_max_fish[2][1]
-
-
-def paste(arr,copy_arr):
+def paste(arr, copy_arr):
     for i in range(N):
         for j in range(N):
-            if copy_arr[i][j]:
-                for fish in copy_arr[i][j]:
-                    arr[i][j].append(fish)
+            for d in range(8):
+                arr[i][j][d] += copy_arr[i][j][d]
     return arr
+
+
 
 delta8_x = [-1,-1,0,1,1,1,0,-1]
 delta8_y = [0,-1,-1,-1,0,1,1,1]
@@ -106,25 +101,20 @@ delta4_x = [0,-1,0,1]
 delta4_y = [-1,0,1,0]
 
 N = 4
-M,S = map(int, sys.stdin.readline().split())
-graph = []
-for i in range(N):
-    graph.append([])
-    for j in range(N):
-        graph[i].append([])
+M, S = map(int, sys.stdin.readline().split())
+
+graph = [[[0]*8 for _ in range(N)] for _ in range(N)] # 3차원은 방향에 따라 += 1해서 물고기 한번에 관리
 
 for _ in range(M):
-    y,x,direct = map(int, sys.stdin.readline().split())
-    graph[y-1][x-1].append(direct-1)
+    y, x, direct = map(int, sys.stdin.readline().split())
+    graph[y-1][x-1][direct-1] += 1
 
-shark_y,shark_x = map(int, sys.stdin.readline().split())
-shark_x-=1; shark_y-=1
+shark_y, shark_x = map(int, sys.stdin.readline().split())
+shark_x -= 1; shark_y -= 1
 
-smell_graph = []
-for _ in range(N):
-    smell_graph.append([-1]*N)
+smell_graph = [[-1]*N for _ in range(N)]
 
-for time in range(1,S+1):
+for time in range(1, S+1):
     # copy
     copy_graph = [[t[:] for t in temp] for temp in graph]
 
@@ -132,15 +122,15 @@ for time in range(1,S+1):
     graph = move_fish(graph)
 
     # 상어 이동
-    graph,shark_x,shark_y = move_shark(graph,shark_x,shark_y)
+    graph, shark_x, shark_y = move_shark(graph, shark_x, shark_y)
 
     # paste
-    graph = paste(graph,copy_graph)
+    graph = paste(graph, copy_graph)
 
-# 물고기 수 세기
+# 결과 계산
 res = 0
 for i in range(N):
     for j in range(N):
-        res += len(graph[i][j])
+        res += sum(graph[i][j]) # 8방 한번에 더하기
 
 print(res)
