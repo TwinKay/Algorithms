@@ -1,0 +1,1 @@
+print((lambda N,_,P: N*P)(int(input()), int(input()), int(input())))
